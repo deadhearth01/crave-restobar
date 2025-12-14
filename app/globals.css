@@ -2,12 +2,6 @@
 @import "tailwindcss";
 @config "../tailwind.config.mjs";
 
-/* Brand color */
-:root {
-  --brand: #D4440D;
-  --brand-light: #F5703F;
-}
-
 * {
   box-sizing: border-box;
   padding: 0;
@@ -45,12 +39,6 @@ body {
   background: #404040;
 }
 
-/* Brand color */
-:root {
-  --brand: #D4440D;
-  --brand-light: #F5703F;
-}
-
 /* Mobile touch improvements */
 @media (max-width: 768px) {
   button, a {
@@ -64,6 +52,6 @@ body {
 
 /* Focus visible for accessibility */
 *:focus-visible {
-  outline: 2px solid var(--brand);
+  outline: 2px solid #404040;
   outline-offset: 2px;
 }

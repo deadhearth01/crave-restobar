@@ -32,7 +32,7 @@ export function Sidebar() {
             {/* Mobile Header */}
             <div className="md:hidden flex items-center justify-between px-4 py-3 bg-neutral-900 border-b border-neutral-800">
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg overflow-hidden bg-[#D4440D]">
+                    <div className="w-8 h-8 rounded-lg overflow-hidden bg-neutral-800">
                         <Image
                             src="/logo.png"
                             alt="Logo"
@@ -41,7 +41,7 @@ export function Sidebar() {
                             className="object-cover"
                         />
                     </div>
-                    <span className="font-bold text-[#D4440D]">Crave RestoBar</span>
+                    <span className="font-bold text-white">Crave RestoBar</span>
                 </div>
                 <Button
                     isIconOnly
@@ -71,7 +71,7 @@ export function Sidebar() {
             `}>
                 {/* Desktop Logo */}
                 <div className="hidden md:flex items-center gap-3 px-6 py-5 border-b border-neutral-800">
-                    <div className="w-10 h-10 rounded-lg overflow-hidden bg-[#D4440D]">
+                    <div className="w-10 h-10 rounded-lg overflow-hidden bg-neutral-800">
                         <Image
                             src="/logo.png"
                             alt="Logo"
@@ -81,7 +81,7 @@ export function Sidebar() {
                         />
                     </div>
                     <div>
-                        <h1 className="text-lg font-bold text-[#D4440D]">Crave RestoBar</h1>
+                        <h1 className="text-lg font-bold text-white">Crave RestoBar</h1>
                         <p className="text-xs text-neutral-500">Profit Tracker</p>
                     </div>
                 </div>
@@ -113,7 +113,7 @@ export function Sidebar() {
                                     flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium
                                     transition-colors duration-150
                                     ${isActive
-                                        ? 'bg-[#D4440D] text-white'
+                                        ? 'bg-neutral-800 text-white border border-neutral-700'
                                         : 'text-neutral-400 hover:bg-neutral-800 hover:text-white'
                                     }
                                 `}

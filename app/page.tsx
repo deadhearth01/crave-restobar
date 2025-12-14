@@ -130,10 +130,8 @@ export default function DashboardPage() {
                     <p className="text-neutral-500 mt-1">Overview of your sales performance</p>
                 </div>
                 <Link href="/upload">
-                    <Button 
-                        color="primary" 
-                        className="bg-[#D4440D] w-full sm:w-auto"
-                        style={{ backgroundColor: '#D4440D', color: 'white' }}
+                    <Button
+                        className="w-full sm:w-auto bg-gray-800 text-white border border-gray-700 rounded-xl hover:bg-gray-700"
                     >
                         <Upload className="w-4 h-4 mr-2" />
                         Upload Sales Data

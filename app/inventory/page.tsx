@@ -386,14 +386,12 @@ export default function InventoryPage() {
                         border-t border-gray-700
                         pt-4
                     ">
-                        <Button 
-                            variant="light"
-                        >
+                        <Button variant="light" onPress={onOpenChange} className="hover:bg-gray-800">
                             Cancel
                         </Button>
                         <Button
                             className="bg-red-600 text-white font-semibold rounded-xl shadow-lg hover:bg-red-700"
-                            onClick={handleSubmit}
+                            onPress={handleSubmit}
                         >
                             {editItem ? 'Save Changes' : 'Add Item'}
                         </Button>
