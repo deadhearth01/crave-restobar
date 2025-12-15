@@ -178,9 +178,11 @@ export function Sidebar() {
             {/* Footer */}
             {!isCollapsed && (
                 <Box sx={{ px: 2, py: 1.5 }}>
-                    <Typography sx={{ fontSize: 10, color: 'grey.500' }} display="block">
-                        Powered by Webb Heads
-                    </Typography>
+                    <Link href="https://www.webbheads.com/" passHref>
+                        <Typography sx={{ fontSize: 10, color: 'grey.500' }} display="block">
+                            Built by Webb Heads
+                        </Typography>
+                    </Link>
                 </Box>
             )}
         </Box>
