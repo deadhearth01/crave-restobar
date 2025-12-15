@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Sidebar } from "@/components/sidebar";
 import { Providers } from "@/components/providers";
+import { Box } from "@mui/material";
 
 export const metadata: Metadata = {
   title: "Crave RestoBar - Profit Analytics",
@@ -14,15 +15,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className="antialiased bg-black text-white min-h-screen">
+    <html lang="en">
+      <body className="antialiased">
         <Providers>
-          <div className="flex flex-col md:flex-row min-h-screen">
+          <Box sx={{ display: 'flex', minHeight: '100vh' }}>
             <Sidebar />
-            <main className="flex-1 overflow-auto bg-neutral-950">
+            <Box
+              component="main"
+              sx={{
+                flexGrow: 1,
+                minHeight: '100vh',
+                overflow: 'auto',
+              }}
+            >
               {children}
-            </main>
-          </div>
+            </Box>
+          </Box>
         </Providers>
       </body>
     </html>

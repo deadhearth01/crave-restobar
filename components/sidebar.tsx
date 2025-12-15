@@ -5,132 +5,290 @@ import { usePathname } from 'next/navigation'
 import Image from 'next/image'
 import { useState } from 'react'
 import {
-    LayoutDashboard,
-    Upload,
-    History,
-    FileText,
-    Package,
-    Menu,
-    X
-} from 'lucide-react'
-import { Button } from '@heroui/react'
+    Box,
+    Drawer,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    IconButton,
+    Typography,
+    Divider,
+    AppBar,
+    Toolbar,
+    Tooltip,
+} from '@mui/material'
+import DashboardIcon from '@mui/icons-material/Dashboard'
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import HistoryIcon from '@mui/icons-material/History'
+import AssessmentIcon from '@mui/icons-material/Assessment'
+import Inventory2Icon from '@mui/icons-material/Inventory2'
+import MenuIcon from '@mui/icons-material/Menu'
+import CloseIcon from '@mui/icons-material/Close'
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 
 const navigation = [
-    { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-    { name: 'Upload', href: '/upload', icon: Upload },
-    { name: 'Sales History', href: '/history', icon: History },
-    { name: 'Reports', href: '/reports', icon: FileText },
-    { name: 'Inventory', href: '/inventory', icon: Package },
+    { name: 'Dashboard', href: '/', icon: DashboardIcon },
+    { name: 'Upload', href: '/upload', icon: CloudUploadIcon },
+    { name: 'Sales History', href: '/history', icon: HistoryIcon },
+    { name: 'Reports', href: '/reports', icon: AssessmentIcon },
+    { name: 'Inventory', href: '/inventory', icon: Inventory2Icon },
 ]
+
+const DRAWER_WIDTH_EXPANDED = 220
+const DRAWER_WIDTH_COLLAPSED = 64
 
 export function Sidebar() {
     const pathname = usePathname()
-    const [isOpen, setIsOpen] = useState(false)
+    const [mobileOpen, setMobileOpen] = useState(false)
+    const [collapsed, setCollapsed] = useState(false)
+
+    const handleDrawerToggle = () => {
+        setMobileOpen(!mobileOpen)
+    }
+
+    const toggleCollapse = () => {
+        setCollapsed(!collapsed)
+    }
+
+    const drawerWidth = collapsed ? DRAWER_WIDTH_COLLAPSED : DRAWER_WIDTH_EXPANDED
+
+    const drawerContent = (isCollapsed: boolean = false) => (
+        <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+            {/* Logo Section */}
+            <Box sx={{ 
+                px: isCollapsed ? 1.5 : 2.5, 
+                py: 2.5, 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 2,
+                justifyContent: isCollapsed ? 'center' : 'flex-start',
+            }}>
+                <Box
+                    sx={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: 2,
+                        overflow: 'hidden',
+                        bgcolor: 'grey.800',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        border: '1px solid',
+                        borderColor: 'grey.700',
+                    }}
+                >
+                    <Image
+                        src="/logo.png"
+                        alt="Crave RestoBar"
+                        width={44}
+                        height={44}
+                        style={{ objectFit: 'cover' }}
+                    />
+                </Box>
+                {!isCollapsed && (
+                    <Box>
+                        <Typography variant="subtitle2" fontWeight={700} color="white" lineHeight={1.3}>
+                            Crave RestoBar
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: 'grey.500' }}>
+                            Profit Tracker
+                        </Typography>
+                    </Box>
+                )}
+            </Box>
+
+            <Divider sx={{ borderColor: 'grey.800' }} />
+
+            {/* Navigation */}
+            <List sx={{ flex: 1, px: isCollapsed ? 0.75 : 1, py: 1.5 }}>
+                {navigation.map((item) => {
+                    const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))
+                    const IconComponent = item.icon
+
+                    const button = (
+                        <ListItem key={item.name} disablePadding sx={{ mb: 0.5 }}>
+                            <ListItemButton
+                                component={Link}
+                                href={item.href}
+                                onClick={() => setMobileOpen(false)}
+                                sx={{
+                                    borderRadius: 1.5,
+                                    py: 1,
+                                    px: isCollapsed ? 1.25 : 1.5,
+                                    minHeight: 40,
+                                    justifyContent: isCollapsed ? 'center' : 'flex-start',
+                                    bgcolor: isActive ? 'rgba(239, 68, 68, 0.15)' : 'transparent',
+                                    border: isActive ? '1px solid' : '1px solid transparent',
+                                    borderColor: isActive ? 'rgba(239, 68, 68, 0.4)' : 'transparent',
+                                    '&:hover': {
+                                        bgcolor: isActive ? 'rgba(239, 68, 68, 0.2)' : 'grey.900',
+                                    },
+                                }}
+                            >
+                                <ListItemIcon sx={{ minWidth: isCollapsed ? 0 : 32 }}>
+                                    <IconComponent
+                                        sx={{
+                                            fontSize: 20,
+                                            color: isActive ? '#ef4444' : 'grey.500',
+                                        }}
+                                    />
+                                </ListItemIcon>
+                                {!isCollapsed && (
+                                    <ListItemText
+                                        primary={item.name}
+                                        primaryTypographyProps={{
+                                            fontSize: 13,
+                                            fontWeight: isActive ? 600 : 500,
+                                            color: isActive ? '#ef4444' : 'grey.400',
+                                        }}
+                                    />
+                                )}
+                            </ListItemButton>
+                        </ListItem>
+                    )
+
+                    return isCollapsed ? (
+                        <Tooltip key={item.name} title={item.name} placement="right" arrow>
+                            {button}
+                        </Tooltip>
+                    ) : button
+                })}
+            </List>
+
+            <Divider sx={{ borderColor: 'grey.800' }} />
+
+            {/* Collapse Toggle - Desktop only */}
+            <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center', py: 1 }}>
+                <IconButton 
+                    onClick={toggleCollapse} 
+                    size="small"
+                    sx={{ 
+                        color: 'grey.500',
+                        '&:hover': { color: 'grey.300', bgcolor: 'grey.800' }
+                    }}
+                >
+                    {isCollapsed ? <ChevronRightIcon fontSize="small" /> : <ChevronLeftIcon fontSize="small" />}
+                </IconButton>
+            </Box>
+
+            {/* Footer */}
+            {!isCollapsed && (
+                <Box sx={{ px: 2, py: 1.5 }}>
+                    <Typography sx={{ fontSize: 10, color: 'grey.500' }} display="block">
+                        Powered by Webb Heads
+                    </Typography>
+                </Box>
+            )}
+        </Box>
+    )
 
     return (
         <>
-            {/* Mobile Header */}
-            <div className="md:hidden flex items-center justify-between px-4 py-3 bg-neutral-900 border-b border-neutral-800">
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg overflow-hidden bg-neutral-800">
-                        <Image
-                            src="/logo.png"
-                            alt="Logo"
-                            width={32}
-                            height={32}
-                            className="object-cover"
-                        />
-                    </div>
-                    <span className="font-bold text-white">Crave RestoBar</span>
-                </div>
-                <Button
-                    isIconOnly
-                    variant="light"
-                    onPress={() => setIsOpen(!isOpen)}
-                    aria-label="Toggle menu"
-                >
-                    {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-                </Button>
-            </div>
-
-            {/* Mobile Menu Overlay */}
-            {isOpen && (
-                <div 
-                    className="md:hidden fixed inset-0 bg-black/50 z-40"
-                    onClick={() => setIsOpen(false)}
-                />
-            )}
-
-            {/* Sidebar */}
-            <aside className={`
-                fixed md:static inset-y-0 left-0 z-50
-                w-64 bg-neutral-900 border-r border-neutral-800
-                transform transition-transform duration-200 ease-in-out
-                ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-                md:translate-x-0 md:flex md:flex-col md:min-h-screen
-            `}>
-                {/* Desktop Logo */}
-                <div className="hidden md:flex items-center gap-3 px-6 py-5 border-b border-neutral-800">
-                    <div className="w-10 h-10 rounded-lg overflow-hidden bg-neutral-800">
-                        <Image
-                            src="/logo.png"
-                            alt="Logo"
-                            width={40}
-                            height={40}
-                            className="object-cover"
-                        />
-                    </div>
-                    <div>
-                        <h1 className="text-lg font-bold text-white">Crave RestoBar</h1>
-                        <p className="text-xs text-neutral-500">Profit Tracker</p>
-                    </div>
-                </div>
-
-                {/* Mobile Close Button */}
-                <div className="md:hidden flex items-center justify-between px-4 py-3 border-b border-neutral-800">
-                    <span className="font-semibold text-white">Menu</span>
-                    <Button
-                        isIconOnly
-                        variant="light"
-                        size="sm"
-                        onPress={() => setIsOpen(false)}
-                        aria-label="Close menu"
+            {/* Mobile App Bar */}
+            <AppBar
+                position="fixed"
+                sx={{
+                    display: { md: 'none' },
+                    bgcolor: 'grey.900',
+                    borderBottom: '1px solid',
+                    borderColor: 'grey.800',
+                }}
+                elevation={0}
+            >
+                <Toolbar sx={{ justifyContent: 'space-between', minHeight: 56, px: 2 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                        <Box
+                            sx={{
+                                width: 36,
+                                height: 36,
+                                borderRadius: 1.5,
+                                overflow: 'hidden',
+                                bgcolor: 'grey.800',
+                                border: '1px solid',
+                                borderColor: 'grey.700',
+                            }}
+                        >
+                            <Image
+                                src="/logo.png"
+                                alt="Logo"
+                                width={36}
+                                height={36}
+                                style={{ objectFit: 'cover' }}
+                            />
+                        </Box>
+                        <Box>
+                            <Typography variant="subtitle2" fontWeight={700} color="white">
+                                Crave RestoBar
+                            </Typography>
+                            <Typography variant="caption" sx={{ color: 'grey.500', display: 'block', lineHeight: 1 }}>
+                                Profit Tracker
+                            </Typography>
+                        </Box>
+                    </Box>
+                    <IconButton
+                        color="inherit"
+                        edge="end"
+                        onClick={handleDrawerToggle}
+                        aria-label="open menu"
+                        sx={{ color: 'grey.400' }}
                     >
-                        <X className="w-4 h-4" />
-                    </Button>
-                </div>
+                        <MenuIcon />
+                    </IconButton>
+                </Toolbar>
+            </AppBar>
 
-                {/* Navigation */}
-                <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-                    {navigation.map((item) => {
-                        const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))
-                        return (
-                            <Link
-                                key={item.name}
-                                href={item.href}
-                                onClick={() => setIsOpen(false)}
-                                className={`
-                                    flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium
-                                    transition-colors duration-150
-                                    ${isActive
-                                        ? 'bg-neutral-800 text-white border border-neutral-700'
-                                        : 'text-neutral-400 hover:bg-neutral-800 hover:text-white'
-                                    }
-                                `}
-                            >
-                                <item.icon className="w-5 h-5" />
-                                {item.name}
-                            </Link>
-                        )
-                    })}
-                </nav>
+            {/* Mobile Drawer */}
+            <Drawer
+                variant="temporary"
+                open={mobileOpen}
+                onClose={handleDrawerToggle}
+                ModalProps={{ keepMounted: true }}
+                sx={{
+                    display: { xs: 'block', md: 'none' },
+                    '& .MuiDrawer-paper': {
+                        width: DRAWER_WIDTH_EXPANDED,
+                        bgcolor: 'grey.900',
+                        borderRight: '1px solid',
+                        borderColor: 'grey.800',
+                    },
+                }}
+            >
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 0.5 }}>
+                    <IconButton onClick={handleDrawerToggle} size="small" sx={{ color: 'grey.400' }}>
+                        <CloseIcon fontSize="small" />
+                    </IconButton>
+                </Box>
+                {drawerContent(false)}
+            </Drawer>
 
-                {/* Footer */}
-                <div className="px-6 py-4 border-t border-neutral-800">
-                    <p className="text-xs text-neutral-500">Powered by Webb Heads</p>
-                    <p className="text-xs text-neutral-600 mt-1">Demo Software</p>
-                </div>
-            </aside>
+            {/* Desktop Drawer */}
+            <Drawer
+                variant="permanent"
+                sx={{
+                    display: { xs: 'none', md: 'block' },
+                    width: drawerWidth,
+                    flexShrink: 0,
+                    '& .MuiDrawer-paper': {
+                        width: drawerWidth,
+                        bgcolor: 'grey.900',
+                        borderRight: '1px solid',
+                        borderColor: 'grey.800',
+                        position: 'fixed',
+                        height: '100vh',
+                        transition: 'width 0.2s ease-in-out',
+                        overflowX: 'hidden',
+                    },
+                }}
+            >
+                {drawerContent(collapsed)}
+            </Drawer>
+
+            {/* Spacer for mobile app bar */}
+            <Toolbar variant="dense" sx={{ display: { md: 'none' }, minHeight: 48 }} />
         </>
     )
 }

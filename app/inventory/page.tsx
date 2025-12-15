@@ -1,30 +1,36 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import {
-    Card,
-    CardHeader,
-    CardBody,
-    Button,
-    Input,
-    Table,
-    TableHeader,
-    TableColumn,
-    TableBody,
-    TableRow,
-    TableCell,
-    Chip,
-    Modal,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    useDisclosure,
-    Skeleton,
-    Select,
-    SelectItem
-} from '@heroui/react'
-import { Plus, Search, Edit2, Trash2, Package, Filter } from 'lucide-react'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Table from '@mui/material/Table'
+import TableHead from '@mui/material/TableHead'
+import TableBody from '@mui/material/TableBody'
+import TableRow from '@mui/material/TableRow'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import Chip from '@mui/material/Chip'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
+import Skeleton from '@mui/material/Skeleton'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
+import IconButton from '@mui/material/IconButton'
+import Typography from '@mui/material/Typography'
+import InputAdornment from '@mui/material/InputAdornment'
+import Box from '@mui/material/Box'
+import TablePagination from '@mui/material/TablePagination'
+import AddIcon from '@mui/icons-material/Add'
+import SearchIcon from '@mui/icons-material/Search'
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/Delete'
+import InventoryIcon from '@mui/icons-material/Inventory'
 
 interface InventoryItem {
     id: number
@@ -42,8 +48,10 @@ export default function InventoryPage() {
     const [categoryFilter, setCategoryFilter] = useState('')
     const [categories, setCategories] = useState<string[]>([])
     const [stats, setStats] = useState({ totalItems: 0, avgMargin: 0 })
+    const [page, setPage] = useState(0)
+    const [rowsPerPage, setRowsPerPage] = useState(10)
 
-    const { isOpen, onOpen, onOpenChange } = useDisclosure()
+    const [isOpen, setIsOpen] = useState(false)
     const [editItem, setEditItem] = useState<InventoryItem | null>(null)
     const [formData, setFormData] = useState({
         name: '',
@@ -87,7 +95,7 @@ export default function InventoryPage() {
     function openAddModal() {
         setEditItem(null)
         setFormData({ name: '', costPrice: '', sellingPrice: '', category: '' })
-        onOpen()
+        setIsOpen(true)
     }
 
     function openEditModal(item: InventoryItem) {
@@ -98,7 +106,7 @@ export default function InventoryPage() {
             sellingPrice: item.sellingPrice.toString(),
             category: item.category
         })
-        onOpen()
+        setIsOpen(true)
     }
 
     async function handleSubmit() {
@@ -127,7 +135,7 @@ export default function InventoryPage() {
             }
 
             loadInventory()
-            onOpenChange()
+            setIsOpen(false)
         } catch (err) {
             console.error('Failed to save item:', err)
         }
@@ -154,250 +162,251 @@ export default function InventoryPage() {
 
     const formatCurrency = (value: number) => `₹${value.toLocaleString('en-IN')}`
 
-    const getMarginColor = (margin: number) => {
+    const getMarginColor = (margin: number): 'success' | 'warning' | 'error' => {
         if (margin >= 60) return 'success'
         if (margin >= 45) return 'warning'
-        return 'danger'
+        return 'error'
     }
 
     if (loading) {
         return (
-            <div className="p-4 md:p-8 space-y-6">
-                <div className="flex justify-between items-center">
-                    <Skeleton className="w-48 h-8 rounded" />
-                    <Skeleton className="w-32 h-10 rounded" />
-                </div>
-                <Card className="bg-neutral-900 border-neutral-800">
-                    <CardBody className="p-6">
+            <Box sx={{ p: { xs: 2, md: 3 } }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                    <Skeleton variant="text" width={150} height={28} />
+                    <Skeleton variant="rectangular" width={100} height={32} sx={{ borderRadius: 1.5 }} />
+                </Box>
+                <Card sx={{ bgcolor: 'background.paper' }}>
+                    <CardContent sx={{ p: 2 }}>
                         {[1, 2, 3, 4, 5].map(i => (
-                            <Skeleton key={i} className="w-full h-12 rounded mb-2" />
+                            <Skeleton key={i} variant="rectangular" height={40} sx={{ mb: 1, borderRadius: 1 }} />
                         ))}
-                    </CardBody>
+                    </CardContent>
                 </Card>
-            </div>
+            </Box>
         )
     }
 
     return (
-        <div className="p-4 md:p-8 space-y-6">
+        <Box sx={{ p: { xs: 2, md: 3 } }}>
             {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl md:text-3xl font-bold text-white">Inventory</h1>
-                    <p className="text-gray-400 mt-1">
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: { sm: 'center' }, justifyContent: 'space-between', gap: 2, mb: 2 }}>
+                <Box>
+                    <Typography variant="h5" component="h1" fontWeight="bold" color="white">
+                        Inventory
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
                         {stats.totalItems} items • Avg margin: {stats.avgMargin}%
-                    </p>
-                </div>
+                    </Typography>
+                </Box>
                 <Button
-                    onPress={openAddModal}
-                    className="bg-red-600 text-white font-semibold rounded-xl shadow-lg hover:bg-red-700"
-                    startContent={<Plus className="w-5 h-5" />}
+                    variant="contained"
+                    onClick={openAddModal}
+                    startIcon={<AddIcon />}
+                    size="small"
+                    sx={{
+                        bgcolor: '#ef4444',
+                        '&:hover': { bgcolor: '#dc2626' },
+                        borderRadius: 2,
+                        px: 2,
+                    }}
                 >
                     Add Item
                 </Button>
-            </div>
+            </Box>
 
             {/* Filters */}
-            <Card className="bg-neutral-900 border-2 border-gray-700 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200">
-                <CardBody className="p-6">
-                    <div className="flex flex-col sm:flex-row gap-4">
-                        <div className="flex-1 relative">
-                            <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                            <Input
-                                placeholder="Search items..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                variant="bordered"
-                                classNames={{
-                                    inputWrapper: "border-gray-600 rounded-xl bg-gray-800",
-                                    input: "text-white placeholder:text-gray-400",
-                                }}
-                            />
-                        </div>
-                        <select
-                            value={categoryFilter}
-                            onChange={(e) => setCategoryFilter(e.target.value)}
-                            className="px-4 py-2 rounded-xl border border-gray-600 bg-gray-800 text-white w-full sm:w-48"
-                        >
-                            <option value="">All Categories</option>
-                            {categories.map((cat) => (
-                                <option key={cat} value={cat}>{cat}</option>
-                            ))}
-                        </select>
-                    </div>
-                </CardBody>
+            <Card sx={{ bgcolor: 'background.paper', borderRadius: 2, mb: 2 }}>
+                <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+                    <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2 }}>
+                        <TextField
+                            placeholder="Search items..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            fullWidth
+                            size="small"
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <SearchIcon sx={{ color: 'grey.500', fontSize: 20 }} />
+                                    </InputAdornment>
+                                ),
+                            }}
+                            sx={{ flex: 1 }}
+                        />
+                        <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 160 } }}>
+                            <InputLabel>Category</InputLabel>
+                            <Select
+                                value={categoryFilter}
+                                onChange={(e) => setCategoryFilter(e.target.value)}
+                                label="Category"
+                            >
+                                <MenuItem value="">All Categories</MenuItem>
+                                {categories.map((cat) => (
+                                    <MenuItem key={cat} value={cat}>{cat}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Box>
+                </CardContent>
             </Card>
 
             {/* Table */}
-            <Card className="bg-neutral-900 border-2 border-gray-700 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200">
-                <CardBody className="p-0 overflow-x-auto">
-                    <Table
-                        aria-label="Inventory table"
-                        classNames={{
-                            base: 'min-w-full',
-                            table: 'min-w-full',
-                            th: 'bg-neutral-800 text-neutral-400',
-                            td: 'py-3'
-                        }}
-                        style={{ backgroundColor: '#171717' }}
-                    >
-                        <TableHeader>
-                            <TableColumn>ITEM NAME</TableColumn>
-                            <TableColumn>CATEGORY</TableColumn>
-                            <TableColumn className="text-right">COST</TableColumn>
-                            <TableColumn className="text-right">SELL PRICE</TableColumn>
-                            <TableColumn className="text-right">MARGIN</TableColumn>
-                            <TableColumn className="text-right">ACTIONS</TableColumn>
-                        </TableHeader>
-                        <TableBody emptyContent="No inventory items found.">
-                            {filteredItems.map((item) => (
-                                <TableRow key={item.id}>
-                                    <TableCell>
-                                        <div className="flex items-center gap-2">
-                                            <Package className="w-4 h-4 text-neutral-500" />
-                                            <span className="font-medium text-white">{item.name}</span>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <span className="text-neutral-400 text-sm">{item.category}</span>
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                        <span className="text-neutral-300">{formatCurrency(item.costPrice)}</span>
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                        <span className="text-white font-medium">{formatCurrency(item.sellingPrice)}</span>
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                        <Chip
-                                            color={getMarginColor(item.marginPercent)}
-                                            variant="flat"
-                                            size="sm"
-                                        >
-                                            {item.marginPercent}%
-                                        </Chip>
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                        <div className="flex justify-end gap-2">
-                                            <Button
-                                                isIconOnly
-                                                size="sm"
-                                                variant="light"
-                                                onPress={() => openEditModal(item)}
-                                            >
-                                                <Edit2 className="w-4 h-4" />
-                                            </Button>
-                                            <Button
-                                                isIconOnly
-                                                size="sm"
-                                                variant="light"
-                                                color="danger"
-                                                onPress={() => handleDelete(item.id)}
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </Button>
-                                        </div>
+            <Card sx={{ bgcolor: 'background.paper', borderRadius: 2 }}>
+                <TableContainer>
+                    <Table size="small">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell sx={{ fontSize: 11, fontWeight: 600 }}>ITEM NAME</TableCell>
+                                <TableCell sx={{ fontSize: 11, fontWeight: 600, display: { xs: 'none', md: 'table-cell' } }}>CATEGORY</TableCell>
+                                <TableCell align="right" sx={{ fontSize: 11, fontWeight: 600, display: { xs: 'none', sm: 'table-cell' } }}>COST</TableCell>
+                                <TableCell align="right" sx={{ fontSize: 11, fontWeight: 600 }}>SELL PRICE</TableCell>
+                                <TableCell align="right" sx={{ fontSize: 11, fontWeight: 600 }}>MARGIN</TableCell>
+                                <TableCell align="right" sx={{ fontSize: 11, fontWeight: 600 }}>ACTIONS</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {filteredItems.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={6} align="center">
+                                        <Typography variant="body2" color="text.secondary" sx={{ py: 3 }}>
+                                            No inventory items found.
+                                        </Typography>
                                     </TableCell>
                                 </TableRow>
-                            ))}
+                            ) : (
+                                filteredItems
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((item) => (
+                                    <TableRow key={item.id} hover>
+                                        <TableCell sx={{ py: 1 }}>
+                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                <InventoryIcon sx={{ fontSize: 14, color: 'grey.500' }} />
+                                                <Typography variant="body2" fontWeight={500} color="white">{item.name}</Typography>
+                                            </Box>
+                                        </TableCell>
+                                        <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>
+                                            <Typography variant="caption" color="text.secondary">{item.category}</Typography>
+                                        </TableCell>
+                                        <TableCell align="right" sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
+                                            <Typography variant="caption" color="text.secondary">{formatCurrency(item.costPrice)}</Typography>
+                                        </TableCell>
+                                        <TableCell align="right">
+                                            <Typography variant="body2" fontWeight={500} color="white">{formatCurrency(item.sellingPrice)}</Typography>
+                                        </TableCell>
+                                        <TableCell align="right">
+                                            <Chip
+                                                label={`${item.marginPercent}%`}
+                                                color={getMarginColor(item.marginPercent)}
+                                                size="small"
+                                                sx={{ fontSize: 11, height: 22 }}
+                                            />
+                                        </TableCell>
+                                        <TableCell align="right" sx={{ py: 0.5 }}>
+                                            <IconButton size="small" onClick={() => openEditModal(item)} sx={{ p: 0.5 }}>
+                                                <EditIcon sx={{ fontSize: 16 }} />
+                                            </IconButton>
+                                            <IconButton size="small" color="error" onClick={() => handleDelete(item.id)} sx={{ p: 0.5 }}>
+                                                <DeleteIcon sx={{ fontSize: 16 }} />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            )}
                         </TableBody>
                     </Table>
-                </CardBody>
+                </TableContainer>
+                <TablePagination
+                    component="div"
+                    count={filteredItems.length}
+                    page={page}
+                    onPageChange={(_, newPage) => setPage(newPage)}
+                    rowsPerPage={rowsPerPage}
+                    onRowsPerPageChange={(e) => { setRowsPerPage(parseInt(e.target.value, 10)); setPage(0); }}
+                    rowsPerPageOptions={[10, 25, 50]}
+                    sx={{ 
+                        borderTop: '1px solid rgba(255,255,255,0.1)',
+                        '.MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows': { fontSize: 12 },
+                        '.MuiTablePagination-select': { fontSize: 12 }
+                    }}
+                />
             </Card>
 
-            {/* Add/Edit Modal */}
-            <Modal
-                isOpen={isOpen}
-                onOpenChange={onOpenChange}
-                size="2xl"
-                scrollBehavior="inside"
+            {/* Add/Edit Dialog */}
+            <Dialog
+                open={isOpen}
+                onClose={() => setIsOpen(false)}
+                maxWidth="sm"
+                fullWidth
+                PaperProps={{ sx: { bgcolor: 'grey.900', m: 2 } }}
             >
-                <ModalContent>
-                    <ModalHeader className="
-                        flex flex-col gap-1
-                        border-b border-gray-700
-                        pb-4
-                    ">
-                        <h2 className="text-2xl font-bold text-white">
+                <DialogTitle sx={{ pb: 1 }}>
+                    <Box>
+                        <Typography variant="subtitle1" fontWeight="bold" component="span">
                             {editItem ? 'Edit Item' : 'Add New Item'}
-                        </h2>
-                        <p className="text-sm text-gray-400">
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
                             {editItem ? 'Update item details' : 'Add a new item to your inventory'}
-                        </p>
-                    </ModalHeader>
-
-                    <ModalBody className="py-6">
-                        <div className="space-y-4">
-                            <Input
-                                label="Item Name"
-                                placeholder="e.g., Chilli Chicken"
-                                value={formData.name}
-                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                variant="bordered"
-                                classNames={{
-                                    inputWrapper: "border-gray-600 rounded-xl bg-gray-800",
-                                    input: "text-white",
-                                    label: "text-gray-300"
-                                }}
+                        </Typography>
+                    </Box>
+                </DialogTitle>
+                <DialogContent dividers sx={{ pt: 2 }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        <TextField
+                            label="Item Name"
+                            placeholder="e.g., Chilli Chicken"
+                            value={formData.name}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            fullWidth
+                            size="small"
+                        />
+                        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+                            <TextField
+                                label="Cost Price (₹)"
+                                type="number"
+                                placeholder="0.00"
+                                value={formData.costPrice}
+                                onChange={(e) => setFormData({ ...formData, costPrice: e.target.value })}
+                                fullWidth
+                                size="small"
                             />
-                            <div className="grid grid-cols-2 gap-4">
-                                <Input
-                                    label="Cost Price (₹)"
-                                    type="number"
-                                    placeholder="0.00"
-                                    value={formData.costPrice}
-                                    onChange={(e) => setFormData({ ...formData, costPrice: e.target.value })}
-                                    variant="bordered"
-                                    classNames={{
-                                        inputWrapper: "border-gray-600 rounded-xl bg-gray-800",
-                                        input: "text-white",
-                                        label: "text-gray-300"
-                                    }}
-                                />
-                                <Input
-                                    label="Selling Price (₹)"
-                                    type="number"
-                                    placeholder="0.00"
-                                    value={formData.sellingPrice}
-                                    onChange={(e) => setFormData({ ...formData, sellingPrice: e.target.value })}
-                                    variant="bordered"
-                                    classNames={{
-                                        inputWrapper: "border-gray-600 rounded-xl bg-gray-800",
-                                        input: "text-white",
-                                        label: "text-gray-300"
-                                    }}
-                                />
-                            </div>
-                            <Input
-                                label="Category"
-                                placeholder="e.g., Bar Menu"
-                                value={formData.category}
-                                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                variant="bordered"
-                                classNames={{
-                                    inputWrapper: "border-gray-600 rounded-xl bg-gray-800",
-                                    input: "text-white",
-                                    label: "text-gray-300"
-                                }}
+                            <TextField
+                                label="Selling Price (₹)"
+                                type="number"
+                                placeholder="0.00"
+                                value={formData.sellingPrice}
+                                onChange={(e) => setFormData({ ...formData, sellingPrice: e.target.value })}
+                                fullWidth
+                                size="small"
                             />
-                        </div>
-                    </ModalBody>
-
-                    <ModalFooter className="
-                        border-t border-gray-700
-                        pt-4
-                    ">
-                        <Button variant="light" onPress={onOpenChange} className="hover:bg-gray-800">
-                            Cancel
-                        </Button>
-                        <Button
-                            className="bg-red-600 text-white font-semibold rounded-xl shadow-lg hover:bg-red-700"
-                            onPress={handleSubmit}
-                        >
-                            {editItem ? 'Save Changes' : 'Add Item'}
-                        </Button>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
-        </div>
+                        </Box>
+                        <TextField
+                            label="Category"
+                            placeholder="e.g., Bar Menu"
+                            value={formData.category}
+                            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                            fullWidth
+                            size="small"
+                        />
+                    </Box>
+                </DialogContent>
+                <DialogActions sx={{ p: 2, pt: 1.5 }}>
+                    <Button onClick={() => setIsOpen(false)} size="small" sx={{ color: 'grey.400' }}>
+                        Cancel
+                    </Button>
+                    <Button
+                        variant="contained"
+                        onClick={handleSubmit}
+                        size="small"
+                        sx={{
+                            bgcolor: '#ef4444',
+                            '&:hover': { bgcolor: '#dc2626' },
+                            borderRadius: 1.5,
+                        }}
+                    >
+                        {editItem ? 'Save Changes' : 'Add Item'}
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </Box>
     )
 }

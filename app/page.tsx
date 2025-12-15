@@ -1,16 +1,19 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Card, CardHeader, CardBody, Button, Skeleton } from '@heroui/react'
-import {
-    Upload,
-    TrendingUp,
-    DollarSign,
-    ShoppingCart,
-    FileSpreadsheet,
-    ArrowUpRight,
-    Package
-} from 'lucide-react'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import Button from '@mui/material/Button'
+import Skeleton from '@mui/material/Skeleton'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import TrendingUpIcon from '@mui/icons-material/TrendingUp'
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
+import DescriptionIcon from '@mui/icons-material/Description'
+import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
+import InventoryIcon from '@mui/icons-material/Inventory'
 import Link from 'next/link'
 import {
     BarChart,
@@ -44,7 +47,7 @@ interface DashboardData {
     }[]
 }
 
-const COLORS = ['#D4440D', '#22c55e', '#3b82f6', '#f59e0b', '#8b5cf6']
+const COLORS = ['#22c55e', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4']
 
 export default function DashboardPage() {
     const [data, setData] = useState<DashboardData | null>(null)
@@ -88,18 +91,18 @@ export default function DashboardPage() {
 
     if (loading) {
         return (
-            <div className="p-4 md:p-8 space-y-6">
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <Box sx={{ p: { xs: 2, md: 3 } }}>
+                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }, gap: 2 }}>
                     {[1, 2, 3, 4].map((i) => (
-                        <Card key={i} className="bg-neutral-900 border-neutral-800">
-                            <CardBody className="p-4">
-                                <Skeleton className="w-20 h-4 rounded mb-2" />
-                                <Skeleton className="w-32 h-8 rounded" />
-                            </CardBody>
+                        <Card key={i} sx={{ bgcolor: 'background.paper' }}>
+                            <CardContent sx={{ p: 2 }}>
+                                <Skeleton variant="text" width={60} height={16} sx={{ mb: 0.5 }} />
+                                <Skeleton variant="text" width={100} height={24} />
+                            </CardContent>
                         </Card>
                     ))}
-                </div>
-            </div>
+                </Box>
+            </Box>
         )
     }
 
@@ -122,139 +125,162 @@ export default function DashboardPage() {
     })) || []
 
     return (
-        <div className="p-4 md:p-8 space-y-6">
+        <Box sx={{ p: { xs: 2, md: 3 } }}>
             {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl md:text-3xl font-bold text-white">Dashboard</h1>
-                    <p className="text-neutral-500 mt-1">Overview of your sales performance</p>
-                </div>
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: { sm: 'center' }, justifyContent: 'space-between', gap: 2, mb: 2 }}>
+                <Box>
+                    <Typography variant="h5" component="h1" fontWeight="bold" color="white">
+                        Dashboard
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                        Overview of your sales performance
+                    </Typography>
+                </Box>
                 <Link href="/upload">
                     <Button
-                        className="w-full sm:w-auto bg-gray-800 text-white border border-gray-700 rounded-xl hover:bg-gray-700"
+                        variant="contained"
+                        startIcon={<CloudUploadIcon sx={{ fontSize: 18 }} />}
+                        size="small"
+                        sx={{
+                            bgcolor: '#ef4444',
+                            '&:hover': { bgcolor: '#dc2626' },
+                            borderRadius: 2,
+                            px: 2,
+                            fontWeight: 600,
+                            boxShadow: '0 0 20px rgba(239, 68, 68, 0.3)',
+                        }}
                     >
-                        <Upload className="w-4 h-4 mr-2" />
                         Upload Sales Data
                     </Button>
                 </Link>
-            </div>
+            </Box>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <Card className="bg-neutral-900 border-2 border-gray-700 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200">
-                    <CardBody className="p-6">
-                        <div className="flex items-start justify-between">
-                            <div>
-                                <p className="text-sm text-gray-400 uppercase tracking-wide">Revenue</p>
-                                <p className="text-xl md:text-2xl font-bold text-white mt-1">
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }, gap: 2, mb: 2 }}>
+                <Card sx={{ bgcolor: 'background.paper', borderRadius: 2, transition: 'all 0.2s', '&:hover': { transform: 'translateY(-2px)' } }}>
+                    <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+                        <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                            <Box>
+                                <Typography variant="caption" color="text.secondary" sx={{ textTransform: 'uppercase', letterSpacing: 0.5, fontSize: 10 }}>
+                                    Revenue
+                                </Typography>
+                                <Typography variant="subtitle1" fontWeight="bold" color="white">
                                     {formatCurrency(stats.totalRevenue)}
-                                </p>
-                            </div>
-                            <div className="p-3 bg-red-500/20 rounded-2xl">
-                                <DollarSign className="w-6 h-6 text-red-400" />
-                            </div>
-                        </div>
-                    </CardBody>
+                                </Typography>
+                            </Box>
+                            <Box sx={{ p: 1, bgcolor: 'rgba(239, 68, 68, 0.15)', borderRadius: 2 }}>
+                                <AttachMoneyIcon sx={{ color: '#ef4444', fontSize: 18 }} />
+                            </Box>
+                        </Box>
+                    </CardContent>
                 </Card>
 
-                <Card className="bg-neutral-900 border-2 border-gray-700 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200">
-                    <CardBody className="p-6">
-                        <div className="flex items-start justify-between">
-                            <div>
-                                <p className="text-sm text-gray-400 uppercase tracking-wide">Profit</p>
-                                <p className="text-xl md:text-2xl font-bold text-green-400 mt-1">
+                <Card sx={{ bgcolor: 'background.paper', borderRadius: 2, transition: 'all 0.2s', '&:hover': { transform: 'translateY(-2px)' } }}>
+                    <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+                        <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                            <Box>
+                                <Typography variant="caption" color="text.secondary" sx={{ textTransform: 'uppercase', letterSpacing: 0.5, fontSize: 10 }}>
+                                    Profit
+                                </Typography>
+                                <Typography variant="subtitle1" fontWeight="bold" sx={{ color: '#22c55e' }}>
                                     {formatCurrency(afterTaxProfit)}
-                                </p>
-                                <p className="text-sm text-gray-500 mt-0.5">After Tax</p>
-                            </div>
-                            <div className="p-3 bg-green-500/20 rounded-2xl">
-                                <TrendingUp className="w-6 h-6 text-green-400" />
-                            </div>
-                        </div>
-                    </CardBody>
+                                </Typography>
+                                <Typography variant="caption" color="text.secondary" sx={{ fontSize: 10 }}>
+                                    After Tax
+                                </Typography>
+                            </Box>
+                            <Box sx={{ p: 1, bgcolor: 'rgba(34, 197, 94, 0.15)', borderRadius: 2 }}>
+                                <TrendingUpIcon sx={{ color: '#22c55e', fontSize: 18 }} />
+                            </Box>
+                        </Box>
+                    </CardContent>
                 </Card>
 
-                <Card className="bg-neutral-900 border-2 border-gray-700 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200">
-                    <CardBody className="p-6">
-                        <div className="flex items-start justify-between">
-                            <div>
-                                <p className="text-sm text-gray-400 uppercase tracking-wide">Orders</p>
-                                <p className="text-xl md:text-2xl font-bold text-white mt-1">
+                <Card sx={{ bgcolor: 'background.paper', borderRadius: 2, transition: 'all 0.2s', '&:hover': { transform: 'translateY(-2px)' } }}>
+                    <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+                        <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                            <Box>
+                                <Typography variant="caption" color="text.secondary" sx={{ textTransform: 'uppercase', letterSpacing: 0.5, fontSize: 10 }}>
+                                    Orders
+                                </Typography>
+                                <Typography variant="subtitle1" fontWeight="bold" color="white">
                                     {stats.totalOrders}
-                                </p>
-                            </div>
-                            <div className="p-3 bg-blue-500/20 rounded-2xl">
-                                <ShoppingCart className="w-6 h-6 text-blue-400" />
-                            </div>
-                        </div>
-                    </CardBody>
+                                </Typography>
+                            </Box>
+                            <Box sx={{ p: 1, bgcolor: 'rgba(59, 130, 246, 0.15)', borderRadius: 2 }}>
+                                <ShoppingCartIcon sx={{ color: '#3b82f6', fontSize: 18 }} />
+                            </Box>
+                        </Box>
+                    </CardContent>
                 </Card>
 
-                <Card className="bg-neutral-900 border-2 border-gray-700 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200">
-                    <CardBody className="p-6">
-                        <div className="flex items-start justify-between">
-                            <div>
-                                <p className="text-sm text-gray-400 uppercase tracking-wide">Inventory</p>
-                                <p className="text-xl md:text-2xl font-bold text-white mt-1">
+                <Card sx={{ bgcolor: 'background.paper', borderRadius: 2, transition: 'all 0.2s', '&:hover': { transform: 'translateY(-2px)' } }}>
+                    <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+                        <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                            <Box>
+                                <Typography variant="caption" color="text.secondary" sx={{ textTransform: 'uppercase', letterSpacing: 0.5, fontSize: 10 }}>
+                                    Inventory
+                                </Typography>
+                                <Typography variant="subtitle1" fontWeight="bold" color="white">
                                     {stats.inventoryCount} items
-                                </p>
-                            </div>
-                            <div className="p-3 bg-purple-500/20 rounded-2xl">
-                                <Package className="w-6 h-6 text-purple-400" />
-                            </div>
-                        </div>
-                    </CardBody>
+                                </Typography>
+                            </Box>
+                            <Box sx={{ p: 1, bgcolor: 'rgba(139, 92, 246, 0.15)', borderRadius: 2 }}>
+                                <InventoryIcon sx={{ color: '#8b5cf6', fontSize: 18 }} />
+                            </Box>
+                        </Box>
+                    </CardContent>
                 </Card>
-            </div>
+            </Box>
 
             {/* Charts Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: 'repeat(2, 1fr)' }, gap: 2, mb: 2 }}>
                 {/* Revenue Chart */}
-                <Card className="bg-neutral-900 border-2 border-gray-700 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200">
-                    <CardHeader className="px-6 pt-6 pb-0">
-                        <h3 className="text-lg font-semibold text-white">Profit Trend</h3>
-                    </CardHeader>
-                    <CardBody className="p-6">
+                <Card sx={{ bgcolor: 'background.paper', borderRadius: 2 }}>
+                    <CardContent sx={{ p: 2 }}>
+                        <Typography variant="subtitle2" fontWeight={600} color="white" sx={{ mb: 1.5 }}>
+                            Profit Trend
+                        </Typography>
                         {revenueChartData.length > 0 ? (
-                            <ResponsiveContainer width="100%" height={250}>
+                            <ResponsiveContainer width="100%" height={180}>
                                 <BarChart data={revenueChartData}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-                                    <XAxis dataKey="date" stroke="#666" fontSize={12} />
-                                    <YAxis stroke="#666" fontSize={12} tickFormatter={(v) => `₹${v/1000}k`} />
+                                    <XAxis dataKey="date" stroke="#666" fontSize={10} />
+                                    <YAxis stroke="#666" fontSize={10} tickFormatter={(v) => `₹${v/1000}k`} />
                                     <Tooltip
-                                        contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333' }}
+                                        contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333', fontSize: 12 }}
                                         labelStyle={{ color: '#fff' }}
                                         formatter={(value: number) => [`₹${value.toLocaleString()}`, 'Profit']}
                                     />
-                                    <Bar dataKey="profit" fill="#D4440D" radius={[4, 4, 0, 0]} />
+                                    <Bar dataKey="profit" fill="#22c55e" radius={[3, 3, 0, 0]} />
                                 </BarChart>
                             </ResponsiveContainer>
                         ) : (
-                            <div className="h-[250px] flex items-center justify-center text-neutral-500">
-                                <div className="text-center">
-                                    <FileSpreadsheet className="w-12 h-12 mx-auto mb-3 text-neutral-700" />
-                                    <p>No data yet. Upload sales to see trends.</p>
-                                </div>
-                            </div>
+                            <Box sx={{ height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <Box sx={{ textAlign: 'center' }}>
+                                    <DescriptionIcon sx={{ fontSize: 36, color: 'grey.700', mb: 1 }} />
+                                    <Typography variant="caption" color="text.secondary">No data yet. Upload sales to see trends.</Typography>
+                                </Box>
+                            </Box>
                         )}
-                    </CardBody>
+                    </CardContent>
                 </Card>
 
                 {/* Category Distribution */}
-                <Card className="bg-neutral-900 border-2 border-gray-700 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200">
-                    <CardHeader className="px-6 pt-6 pb-0">
-                        <h3 className="text-lg font-semibold text-white">Inventory by Category</h3>
-                    </CardHeader>
-                    <CardBody className="p-6">
+                <Card sx={{ bgcolor: 'background.paper', borderRadius: 2 }}>
+                    <CardContent sx={{ p: 2 }}>
+                        <Typography variant="subtitle2" fontWeight={600} color="white" sx={{ mb: 1.5 }}>
+                            Inventory by Category
+                        </Typography>
                         {categoryData.length > 0 ? (
-                            <ResponsiveContainer width="100%" height={250}>
+                            <ResponsiveContainer width="100%" height={180}>
                                 <PieChart>
                                     <Pie
                                         data={categoryData}
                                         cx="50%"
                                         cy="50%"
-                                        innerRadius={60}
-                                        outerRadius={90}
+                                        innerRadius={40}
+                                        outerRadius={65}
                                         paddingAngle={2}
                                         dataKey="value"
                                     >
@@ -263,115 +289,116 @@ export default function DashboardPage() {
                                         ))}
                                     </Pie>
                                     <Tooltip
-                                        contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333' }}
+                                        contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333', fontSize: 12 }}
                                     />
                                     <Legend
-                                        formatter={(value) => <span className="text-neutral-300 text-sm">{value}</span>}
+                                        wrapperStyle={{ fontSize: 11 }}
+                                        formatter={(value) => <span style={{ color: '#ffffff' }}>{value}</span>}
                                     />
                                 </PieChart>
                             </ResponsiveContainer>
                         ) : (
-                            <div className="h-[250px] flex items-center justify-center text-neutral-500">
-                                <div className="text-center">
-                                    <Package className="w-12 h-12 mx-auto mb-3 text-neutral-700" />
-                                    <p>Inventory categories will appear here.</p>
-                                </div>
-                            </div>
+                            <Box sx={{ height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <Box sx={{ textAlign: 'center' }}>
+                                    <InventoryIcon sx={{ fontSize: 36, color: 'grey.700', mb: 1 }} />
+                                    <Typography variant="caption" color="text.secondary">Inventory categories will appear here.</Typography>
+                                </Box>
+                            </Box>
                         )}
-                    </CardBody>
+                    </CardContent>
                 </Card>
-            </div>
+            </Box>
 
             {/* Quick Actions */}
-            <Card className="bg-neutral-900 border-2 border-gray-700 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200">
-                <CardHeader className="px-6 pt-6 pb-0">
-                    <h3 className="text-lg font-semibold text-white">Quick Actions</h3>
-                </CardHeader>
-                <CardBody className="p-6">
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <Link href="/upload" className="block">
-                            <div className="p-4 bg-gray-800 rounded-xl hover:bg-gray-700 transition-colors">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-3 bg-red-500/20 rounded-2xl">
-                                        <Upload className="w-6 h-6 text-red-400" />
-                                    </div>
-                                    <div>
-                                        <p className="font-medium text-white">Upload Data</p>
-                                        <p className="text-sm text-gray-400">Import daily Excel</p>
-                                    </div>
-                                    <ArrowUpRight className="w-4 h-4 text-gray-400 ml-auto" />
-                                </div>
-                            </div>
+            <Card sx={{ bgcolor: 'background.paper', borderRadius: 2, mb: 2 }}>
+                <CardContent sx={{ p: 2 }}>
+                    <Typography variant="subtitle2" fontWeight={600} color="white" sx={{ mb: 1.5 }}>
+                        Quick Actions
+                    </Typography>
+                    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' }, gap: 1.5 }}>
+                        <Link href="/upload" style={{ textDecoration: 'none' }}>
+                            <Box sx={{ p: 1.5, bgcolor: 'grey.800', borderRadius: 2, '&:hover': { bgcolor: 'grey.700' }, transition: 'all 0.2s', cursor: 'pointer' }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                                    <Box sx={{ p: 1, bgcolor: 'rgba(239, 68, 68, 0.15)', borderRadius: 1.5 }}>
+                                        <CloudUploadIcon sx={{ color: '#ef4444', fontSize: 18 }} />
+                                    </Box>
+                                    <Box sx={{ flex: 1 }}>
+                                        <Typography variant="body2" fontWeight={500} color="white">Upload Data</Typography>
+                                        <Typography variant="caption" color="text.secondary" sx={{ fontSize: 10 }}>Import daily Excel</Typography>
+                                    </Box>
+                                    <ArrowOutwardIcon sx={{ color: 'grey.600', fontSize: 14 }} />
+                                </Box>
+                            </Box>
                         </Link>
 
-                        <Link href="/inventory" className="block">
-                            <div className="p-4 bg-gray-800 rounded-xl hover:bg-gray-700 transition-colors">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-3 bg-purple-500/20 rounded-2xl">
-                                        <Package className="w-6 h-6 text-purple-400" />
-                                    </div>
-                                    <div>
-                                        <p className="font-medium text-white">Inventory</p>
-                                        <p className="text-sm text-gray-400">Manage cost prices</p>
-                                    </div>
-                                    <ArrowUpRight className="w-4 h-4 text-gray-400 ml-auto" />
-                                </div>
-                            </div>
+                        <Link href="/inventory" style={{ textDecoration: 'none' }}>
+                            <Box sx={{ p: 1.5, bgcolor: 'grey.800', borderRadius: 2, '&:hover': { bgcolor: 'grey.700' }, transition: 'all 0.2s', cursor: 'pointer' }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                                    <Box sx={{ p: 1, bgcolor: 'rgba(139, 92, 246, 0.15)', borderRadius: 1.5 }}>
+                                        <InventoryIcon sx={{ color: '#8b5cf6', fontSize: 18 }} />
+                                    </Box>
+                                    <Box sx={{ flex: 1 }}>
+                                        <Typography variant="body2" fontWeight={500} color="white">Inventory</Typography>
+                                        <Typography variant="caption" color="text.secondary" sx={{ fontSize: 10 }}>Manage cost prices</Typography>
+                                    </Box>
+                                    <ArrowOutwardIcon sx={{ color: 'grey.600', fontSize: 14 }} />
+                                </Box>
+                            </Box>
                         </Link>
 
-                        <Link href="/reports" className="block">
-                            <div className="p-4 bg-gray-800 rounded-xl hover:bg-gray-700 transition-colors">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-3 bg-green-500/20 rounded-2xl">
-                                        <FileSpreadsheet className="w-6 h-6 text-green-400" />
-                                    </div>
-                                    <div>
-                                        <p className="font-medium text-white">Reports</p>
-                                        <p className="text-sm text-gray-400">View profit analysis</p>
-                                    </div>
-                                    <ArrowUpRight className="w-4 h-4 text-gray-400 ml-auto" />
-                                </div>
-                            </div>
+                        <Link href="/reports" style={{ textDecoration: 'none' }}>
+                            <Box sx={{ p: 1.5, bgcolor: 'grey.800', borderRadius: 2, '&:hover': { bgcolor: 'grey.700' }, transition: 'all 0.2s', cursor: 'pointer' }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                                    <Box sx={{ p: 1, bgcolor: 'rgba(34, 197, 94, 0.15)', borderRadius: 1.5 }}>
+                                        <DescriptionIcon sx={{ color: '#22c55e', fontSize: 18 }} />
+                                    </Box>
+                                    <Box sx={{ flex: 1 }}>
+                                        <Typography variant="body2" fontWeight={500} color="white">Reports</Typography>
+                                        <Typography variant="caption" color="text.secondary" sx={{ fontSize: 10 }}>View profit analysis</Typography>
+                                    </Box>
+                                    <ArrowOutwardIcon sx={{ color: 'grey.600', fontSize: 14 }} />
+                                </Box>
+                            </Box>
                         </Link>
-                    </div>
-                </CardBody>
+                    </Box>
+                </CardContent>
             </Card>
 
             {/* Recent Records */}
             {data?.recentRecords && data.recentRecords.length > 0 && (
-                <Card className="bg-neutral-900 border-2 border-gray-700 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200">
-                    <CardHeader className="px-6 pt-6 pb-0">
-                        <h3 className="text-lg font-semibold text-white">Recent Uploads</h3>
-                    </CardHeader>
-                    <CardBody className="p-6">
-                        <div className="space-y-3">
+                <Card sx={{ bgcolor: 'background.paper', borderRadius: 2 }}>
+                    <CardContent sx={{ p: 2 }}>
+                        <Typography variant="subtitle2" fontWeight={600} color="white" sx={{ mb: 1.5 }}>
+                            Recent Uploads
+                        </Typography>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                             {data.recentRecords.slice(0, 5).map((record) => (
-                                <Link key={record.id} href={`/reports?id=${record.id}`}>
-                                    <div className="flex items-center justify-between p-4 bg-gray-800 rounded-xl hover:bg-gray-700 transition-colors">
-                                        <div className="flex items-center gap-3">
-                                            <FileSpreadsheet className="w-5 h-5 text-red-400" />
-                                            <div>
-                                                <p className="font-medium text-white text-sm">{record.fileName}</p>
-                                                <p className="text-sm text-gray-400">
+                                <Link key={record.id} href={`/reports?id=${record.id}`} style={{ textDecoration: 'none' }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 1.5, bgcolor: 'grey.800', borderRadius: 2, '&:hover': { bgcolor: 'grey.700' }, transition: 'all 0.2s', cursor: 'pointer' }}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                                            <DescriptionIcon sx={{ color: '#ef4444', fontSize: 18 }} />
+                                            <Box>
+                                                <Typography variant="body2" fontWeight={500} color="white">{record.fileName}</Typography>
+                                                <Typography variant="caption" color="text.secondary" sx={{ fontSize: 10 }}>
                                                     {new Date(record.date).toLocaleDateString('en-IN', {
                                                         day: 'numeric',
                                                         month: 'short',
                                                         year: 'numeric'
                                                     })}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div className="text-right">
-                                            <p className="font-semibold text-green-400">{formatCurrency(record.totalProfit)}</p>
-                                            <p className="text-sm text-gray-400">{record.totalOrders} orders</p>
-                                        </div>
-                                    </div>
+                                                </Typography>
+                                            </Box>
+                                        </Box>
+                                        <Box sx={{ textAlign: 'right' }}>
+                                            <Typography variant="body2" fontWeight={600} sx={{ color: '#22c55e' }}>{formatCurrency(record.totalProfit)}</Typography>
+                                            <Typography variant="caption" color="text.secondary" sx={{ fontSize: 10 }}>{record.totalOrders} orders</Typography>
+                                        </Box>
+                                    </Box>
                                 </Link>
                             ))}
-                        </div>
-                    </CardBody>
+                        </Box>
+                    </CardContent>
                 </Card>
             )}
-        </div>
+        </Box>
     )
 }

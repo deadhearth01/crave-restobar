@@ -1,29 +1,27 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import {
-    Card,
-    CardHeader,
-    CardBody,
-    Button,
-    Table,
-    TableHeader,
-    TableColumn,
-    TableBody,
-    TableRow,
-    TableCell,
-    Chip,
-    Skeleton
-} from '@heroui/react'
-import {
-    Calendar,
-    Eye,
-    Trash2,
-    TrendingUp,
-    DollarSign,
-    FileSpreadsheet,
-    ShoppingCart
-} from 'lucide-react'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import Button from '@mui/material/Button'
+import Table from '@mui/material/Table'
+import TableHead from '@mui/material/TableHead'
+import TableBody from '@mui/material/TableBody'
+import TableRow from '@mui/material/TableRow'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import Chip from '@mui/material/Chip'
+import Skeleton from '@mui/material/Skeleton'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
+import IconButton from '@mui/material/IconButton'
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
+import VisibilityIcon from '@mui/icons-material/Visibility'
+import DeleteIcon from '@mui/icons-material/Delete'
+import TrendingUpIcon from '@mui/icons-material/TrendingUp'
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
+import DescriptionIcon from '@mui/icons-material/Description'
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import Link from 'next/link'
 import {
     LineChart,
@@ -122,92 +120,84 @@ export default function HistoryPage() {
 
     if (loading) {
         return (
-            <div className="p-4 md:p-8 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Box sx={{ p: { xs: 2, md: 3 } }} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     {[1, 2, 3].map(i => (
-                        <Card key={i} className="bg-neutral-900 border-neutral-800">
-                            <CardBody className="p-6">
-                                <Skeleton className="w-24 h-4 rounded mb-2" />
-                                <Skeleton className="w-32 h-8 rounded" />
-                            </CardBody>
+                        <Card key={i} sx={{ bgcolor: 'background.paper' }}>
+                            <CardContent sx={{ p: 2 }}>
+                                <Skeleton variant="text" width={80} height={14} sx={{ mb: 0.5 }} />
+                                <Skeleton variant="text" width={120} height={24} />
+                            </CardContent>
                         </Card>
                     ))}
                 </div>
-            </div>
+            </Box>
         )
     }
 
     return (
-        <div className="p-4 md:p-8 space-y-6">
+        <Box sx={{ p: { xs: 2, md: 3 } }}>
             {/* Header */}
-            <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-white">Sales History</h1>
-                <p className="text-neutral-500 mt-1">Track daily sales and analyze historical performance</p>
-            </div>
+            <Box sx={{ mb: 3 }}>
+                <Typography variant="subtitle1" component="h1" fontWeight="bold" color="white">
+                    Sales History
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                    Track daily sales and analyze historical performance
+                </Typography>
+            </Box>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <Card 
-                    className="bg-neutral-900 border-neutral-800"
-                    style={{ backgroundColor: '#171717', borderColor: '#262626', borderWidth: 1, borderRadius: 12 }}
-                >
-                    <CardBody className="p-5">
-                        <div className="flex items-center gap-4">
-                            <div className="p-3 rounded-lg" style={{ backgroundColor: 'rgba(212, 68, 13, 0.2)' }}>
-                                <DollarSign className="w-6 h-6" style={{ color: '#D4440D' }} />
-                            </div>
-                            <div>
-                                <p className="text-sm" style={{ color: '#737373' }}>Total Revenue</p>
-                                <p className="text-2xl font-bold" style={{ color: '#ffffff' }}>{formatCurrency(stats.totalRevenue)}</p>
-                            </div>
-                        </div>
-                    </CardBody>
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' }, gap: 3, mb: 4 }}>
+                <Card sx={{ bgcolor: 'background.paper', borderRadius: 2 }}>
+                    <CardContent sx={{ p: 2.5, '&:last-child': { pb: 2.5 } }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                            <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: 'rgba(161, 161, 170, 0.2)' }}>
+                                <AttachMoneyIcon sx={{ color: 'grey.300', fontSize: 22 }} />
+                            </Box>
+                            <Box>
+                                <Typography variant="body2" color="text.secondary">Total Revenue</Typography>
+                                <Typography variant="subtitle1" fontWeight="bold" color="white">{formatCurrency(stats.totalRevenue)}</Typography>
+                            </Box>
+                        </Box>
+                    </CardContent>
                 </Card>
 
-                <Card 
-                    className="bg-neutral-900 border-neutral-800"
-                    style={{ backgroundColor: '#171717', borderColor: '#22c55e', borderWidth: 2, borderRadius: 12 }}
-                >
-                    <CardBody className="p-5">
-                        <div className="flex items-center gap-4">
-                            <div className="p-3 rounded-lg" style={{ backgroundColor: 'rgba(34, 197, 94, 0.2)' }}>
-                                <TrendingUp className="w-6 h-6" style={{ color: '#22c55e' }} />
-                            </div>
-                            <div>
-                                <p className="text-sm" style={{ color: '#22c55e', fontWeight: 600 }}>Net Profit (After Tax)</p>
-                                <p className="text-2xl font-bold" style={{ color: '#22c55e' }}>{formatCurrency(stats.totalProfit)}</p>
-                            </div>
-                        </div>
-                    </CardBody>
+                <Card sx={{ bgcolor: 'background.paper', borderRadius: 2, border: '1px solid rgba(34, 197, 94, 0.3)' }}>
+                    <CardContent sx={{ p: 2.5, '&:last-child': { pb: 2.5 } }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                            <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: 'rgba(34, 197, 94, 0.2)' }}>
+                                <TrendingUpIcon sx={{ color: '#22c55e', fontSize: 22 }} />
+                            </Box>
+                            <Box>
+                                <Typography variant="body2" sx={{ color: '#86efac' }}>Net Profit (After Tax)</Typography>
+                                <Typography variant="subtitle1" fontWeight="bold" sx={{ color: '#22c55e' }}>{formatCurrency(stats.totalProfit)}</Typography>
+                            </Box>
+                        </Box>
+                    </CardContent>
                 </Card>
 
-                <Card 
-                    className="bg-neutral-900 border-neutral-800"
-                    style={{ backgroundColor: '#171717', borderColor: '#262626', borderWidth: 1, borderRadius: 12 }}
-                >
-                    <CardBody className="p-5">
-                        <div className="flex items-center gap-4">
-                            <div className="p-3 rounded-lg" style={{ backgroundColor: 'rgba(168, 85, 247, 0.2)' }}>
-                                <FileSpreadsheet className="w-6 h-6" style={{ color: '#a855f7' }} />
-                            </div>
-                            <div>
-                                <p className="text-sm" style={{ color: '#737373' }}>Net Margin</p>
-                                <p className="text-2xl font-bold" style={{ color: '#ffffff' }}>{stats.avgMargin.toFixed(1)}%</p>
-                                <p className="text-xs" style={{ color: '#525252' }}>After Tax</p>
-                            </div>
-                        </div>
-                    </CardBody>
+                <Card sx={{ bgcolor: 'background.paper', borderRadius: 2 }}>
+                    <CardContent sx={{ p: 2.5, '&:last-child': { pb: 2.5 } }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                            <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: 'rgba(139, 92, 246, 0.2)' }}>
+                                <DescriptionIcon sx={{ color: '#a78bfa', fontSize: 22 }} />
+                            </Box>
+                            <Box>
+                                <Typography variant="body2" color="text.secondary">Net Margin</Typography>
+                                <Typography variant="subtitle1" fontWeight="bold" color="white">{stats.avgMargin.toFixed(1)}%</Typography>
+                            </Box>
+                        </Box>
+                    </CardContent>
                 </Card>
-            </div>
+            </Box>
 
             {/* Profit Trend Chart */}
             {chartData.length > 0 && (
-                <Card className="bg-neutral-900 border-neutral-800">
-                    <CardHeader className="px-6 pt-6 pb-0">
-                        <h3 className="text-lg font-semibold text-white">Profit Trend</h3>
-                    </CardHeader>
-                    <CardBody className="p-6">
-                        <ResponsiveContainer width="100%" height={250}>
+                <Card sx={{ bgcolor: 'background.paper', borderRadius: 2 }}>
+                    <CardContent sx={{ p: 2 }}>
+                        <Typography variant="body2" fontWeight="semibold" color="white" sx={{ mb: 1.5 }}>Profit Trend</Typography>
+                        <ResponsiveContainer width="100%" height={180}>
                             <AreaChart data={chartData}>
                                 <defs>
                                     <linearGradient id="profitGradient" x1="0" y1="0" x2="0" y2="1">
@@ -216,10 +206,10 @@ export default function HistoryPage() {
                                     </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-                                <XAxis dataKey="date" stroke="#666" fontSize={12} />
-                                <YAxis stroke="#666" fontSize={12} tickFormatter={(v) => `₹${v/1000}k`} />
+                                <XAxis dataKey="date" stroke="#666" fontSize={10} />
+                                <YAxis stroke="#666" fontSize={10} tickFormatter={(v) => `₹${v/1000}k`} />
                                 <Tooltip
-                                    contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333' }}
+                                    contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333', fontSize: 11 }}
                                     labelStyle={{ color: '#fff' }}
                                     formatter={(value: number) => [`₹${value.toLocaleString()}`, '']}
                                 />
@@ -233,118 +223,87 @@ export default function HistoryPage() {
                                 />
                             </AreaChart>
                         </ResponsiveContainer>
-                    </CardBody>
+                    </CardContent>
                 </Card>
             )}
 
             {/* Records Table */}
-            <Card 
-                className="bg-neutral-900 border-neutral-800"
-                style={{ backgroundColor: '#171717', borderColor: '#262626', borderWidth: 1, borderRadius: 12 }}
-            >
-                <CardHeader className="px-6 pt-6 pb-0">
-                    <h3 className="text-lg font-semibold" style={{ color: '#ffffff' }}>Transaction History</h3>
-                </CardHeader>
-                <CardBody className="p-0 overflow-x-auto">
-                    <Table
-                        aria-label="Sales history table"
-                        classNames={{
-                            base: 'min-w-full',
-                            th: 'bg-neutral-800 text-neutral-400',
-                            td: 'py-3'
-                        }}
-                        style={{ backgroundColor: 'transparent' }}
-                    >
-                        <TableHeader>
-                            <TableColumn style={{ backgroundColor: '#262626', color: '#a1a1a1', padding: '12px 16px' }}>DATE</TableColumn>
-                            <TableColumn style={{ backgroundColor: '#262626', color: '#a1a1a1', padding: '12px 16px' }}>FILE</TableColumn>
-                            <TableColumn style={{ backgroundColor: '#262626', color: '#a1a1a1', padding: '12px 16px', textAlign: 'right' }}>ORDERS</TableColumn>
-                            <TableColumn style={{ backgroundColor: '#262626', color: '#a1a1a1', padding: '12px 16px', textAlign: 'right' }}>REVENUE</TableColumn>
-                            <TableColumn style={{ backgroundColor: '#262626', color: '#a1a1a1', padding: '12px 16px', textAlign: 'right' }}>TAX</TableColumn>
-                            <TableColumn style={{ backgroundColor: '#262626', color: '#a1a1a1', padding: '12px 16px', textAlign: 'right' }}>NET PROFIT</TableColumn>
-                            <TableColumn style={{ backgroundColor: '#262626', color: '#a1a1a1', padding: '12px 16px', textAlign: 'right' }}>MARGIN</TableColumn>
-                            <TableColumn style={{ backgroundColor: '#262626', color: '#a1a1a1', padding: '12px 16px', textAlign: 'right' }}>ACTIONS</TableColumn>
-                        </TableHeader>
-                        <TableBody emptyContent={
-                            <div className="py-12 text-center">
-                                <FileSpreadsheet className="w-12 h-12 mx-auto mb-3" style={{ color: '#404040' }} />
-                                <p style={{ color: '#737373' }}>No sales records yet.</p>
-                                <Link href="/upload">
-                                    <button 
-                                        className="mt-4 px-4 py-2 rounded-lg font-medium"
-                                        style={{ backgroundColor: '#D4440D', color: '#ffffff' }}
-                                    >
-                                        Upload First File
-                                    </button>
-                                </Link>
-                            </div>
-                        }>
-                            {records.map((record) => {
-                                const netProfit = record.totalProfit - (record.totalTax || 0)
-                                const netMargin = record.totalRevenue > 0 ? (netProfit / record.totalRevenue) * 100 : 0
-                                return (
-                                    <TableRow key={record.id} style={{ borderBottom: '1px solid #262626' }}>
-                                        <TableCell style={{ padding: '12px 16px' }}>
-                                            <div className="flex items-center gap-2">
-                                                <Calendar className="w-4 h-4" style={{ color: '#737373' }} />
-                                                <span style={{ color: '#ffffff', fontWeight: 500 }}>{formatDate(record.date)}</span>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell style={{ padding: '12px 16px' }}>
-                                            <span style={{ color: '#a1a1a1', fontSize: '14px' }}>{record.fileName}</span>
-                                        </TableCell>
-                                        <TableCell style={{ padding: '12px 16px', textAlign: 'right' }}>
-                                            <span style={{ color: '#d4d4d4' }}>{record.totalOrders}</span>
-                                        </TableCell>
-                                        <TableCell style={{ padding: '12px 16px', textAlign: 'right' }}>
-                                            <span style={{ color: '#ffffff', fontWeight: 500 }}>{formatCurrency(record.totalRevenue)}</span>
-                                        </TableCell>
-                                        <TableCell style={{ padding: '12px 16px', textAlign: 'right' }}>
-                                            <span style={{ color: '#f59e0b' }}>{formatCurrency(record.totalTax || 0)}</span>
-                                        </TableCell>
-                                        <TableCell style={{ padding: '12px 16px', textAlign: 'right' }}>
-                                            <span style={{ color: '#22c55e', fontWeight: 600 }}>{formatCurrency(netProfit)}</span>
-                                        </TableCell>
-                                        <TableCell style={{ padding: '12px 16px', textAlign: 'right' }}>
-                                            <span 
-                                                style={{ 
-                                                    padding: '4px 8px', 
-                                                    borderRadius: '9999px', 
-                                                    fontSize: '12px',
-                                                    fontWeight: 500,
-                                                    backgroundColor: netMargin > 50 ? 'rgba(34, 197, 94, 0.2)' : netMargin > 40 ? 'rgba(245, 158, 11, 0.2)' : 'rgba(239, 68, 68, 0.2)',
-                                                    color: netMargin > 50 ? '#22c55e' : netMargin > 40 ? '#f59e0b' : '#ef4444'
-                                                }}
-                                            >
-                                                {netMargin.toFixed(1)}%
-                                            </span>
-                                        </TableCell>
-                                        <TableCell style={{ padding: '12px 16px', textAlign: 'right' }}>
-                                            <div className="flex justify-end gap-2">
-                                                <Link href={`/reports?id=${record.id}`}>
-                                                    <button 
-                                                        className="p-2 rounded-lg hover:bg-neutral-800"
-                                                        style={{ color: '#a1a1a1' }}
-                                                    >
-                                                        <Eye className="w-4 h-4" />
-                                                    </button>
+            <Card sx={{ bgcolor: 'background.paper', borderRadius: 2, mt: 4 }}>
+                <CardContent sx={{ p: 2 }}>
+                    <Typography variant="body2" fontWeight="semibold" color="white" sx={{ mb: 1.5 }}>Transaction History</Typography>
+                    <TableContainer>
+                        <Table size="small">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell sx={{ fontSize: 10, py: 1 }}>DATE</TableCell>
+                                    <TableCell sx={{ fontSize: 10, py: 1, display: { xs: 'none', md: 'table-cell' } }}>FILE</TableCell>
+                                    <TableCell align="right" sx={{ fontSize: 10, py: 1, display: { xs: 'none', sm: 'table-cell' } }}>ORDERS</TableCell>
+                                    <TableCell align="right" sx={{ fontSize: 10, py: 1 }}>REVENUE</TableCell>
+                                    <TableCell align="right" sx={{ fontSize: 10, py: 1, display: { xs: 'none', md: 'table-cell' } }}>TAX</TableCell>
+                                    <TableCell align="right" sx={{ fontSize: 10, py: 1 }}>NET PROFIT</TableCell>
+                                    <TableCell align="right" sx={{ fontSize: 10, py: 1 }}>MARGIN</TableCell>
+                                    <TableCell align="right" sx={{ fontSize: 10, py: 1 }}>ACTIONS</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {records.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={8} align="center">
+                                            <Box sx={{ py: 4 }}>
+                                                <DescriptionIcon sx={{ fontSize: 36, color: 'grey.700', mb: 1 }} />
+                                                <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>No sales records yet.</Typography>
+                                                <Link href="/upload">
+                                                    <Button variant="contained" size="small" sx={{ bgcolor: 'grey.200', color: 'grey.900', '&:hover': { bgcolor: 'grey.100' } }}>
+                                                        Upload First File
+                                                    </Button>
                                                 </Link>
-                                                <button
-                                                    className="p-2 rounded-lg hover:bg-red-500/20"
-                                                    style={{ color: '#ef4444' }}
-                                                    onClick={() => handleDelete(record.id)}
-                                                >
-                                                    <Trash2 className="w-4 h-4" />
-                                                </button>
-                                            </div>
+                                            </Box>
                                         </TableCell>
                                     </TableRow>
-                                )
-                            })}
-                        </TableBody>
-                    </Table>
-                </CardBody>
+                                ) : (
+                                    records.map((record) => {
+                                        const netProfit = record.totalProfit - (record.totalTax || 0)
+                                        const netMargin = record.totalRevenue > 0 ? (netProfit / record.totalRevenue) * 100 : 0
+                                        return (
+                                            <TableRow key={record.id} hover>
+                                                <TableCell sx={{ py: 1 }}>
+                                                    <div className="flex items-center gap-1">
+                                                        <CalendarTodayIcon sx={{ fontSize: 12, color: 'grey.500' }} />
+                                                        <Typography variant="caption" fontWeight="medium" color="white">{formatDate(record.date)}</Typography>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell sx={{ py: 1, display: { xs: 'none', md: 'table-cell' } }}><Typography variant="caption" color="text.secondary">{record.fileName}</Typography></TableCell>
+                                                <TableCell align="right" sx={{ py: 1, display: { xs: 'none', sm: 'table-cell' } }}><Typography variant="caption" color="text.secondary">{record.totalOrders}</Typography></TableCell>
+                                                <TableCell align="right" sx={{ py: 1 }}><Typography variant="caption" fontWeight="medium" color="white">{formatCurrency(record.totalRevenue)}</Typography></TableCell>
+                                                <TableCell align="right" sx={{ py: 1, display: { xs: 'none', md: 'table-cell' } }}><Typography variant="caption" sx={{ color: '#f59e0b' }}>{formatCurrency(record.totalTax || 0)}</Typography></TableCell>
+                                                <TableCell align="right" sx={{ py: 1 }}><Typography variant="caption" fontWeight="semibold" sx={{ color: '#22c55e' }}>{formatCurrency(netProfit)}</Typography></TableCell>
+                                                <TableCell align="right" sx={{ py: 1 }}>
+                                                    <Chip
+                                                        label={`${netMargin.toFixed(1)}%`}
+                                                        size="small"
+                                                        color={netMargin > 50 ? 'success' : netMargin > 40 ? 'warning' : 'error'}
+                                                        sx={{ height: 18, '& .MuiChip-label': { px: 0.75, fontSize: 10 } }}
+                                                    />
+                                                </TableCell>
+                                                <TableCell align="right" sx={{ py: 1 }}>
+                                                    <Link href={`/reports?id=${record.id}`}>
+                                                        <IconButton size="small" sx={{ p: 0.5 }}>
+                                                            <VisibilityIcon sx={{ fontSize: 16, color: 'grey.400' }} />
+                                                        </IconButton>
+                                                    </Link>
+                                                    <IconButton size="small" sx={{ p: 0.5 }} onClick={() => handleDelete(record.id)}>
+                                                        <DeleteIcon sx={{ fontSize: 16, color: '#ef4444' }} />
+                                                    </IconButton>
+                                                </TableCell>
+                                            </TableRow>
+                                        )
+                                    })
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </CardContent>
             </Card>
-        </div>
+        </Box>
     )
 }

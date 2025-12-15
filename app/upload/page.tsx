@@ -1,23 +1,19 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import {
-    Card,
-    CardHeader,
-    CardBody,
-    Button,
-    Progress,
-    Chip
-} from '@heroui/react'
-import {
-    Upload,
-    FileSpreadsheet,
-    X,
-    CheckCircle,
-    AlertCircle,
-    Zap,
-    TrendingUp
-} from 'lucide-react'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import Button from '@mui/material/Button'
+import Chip from '@mui/material/Chip'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import DescriptionIcon from '@mui/icons-material/Description'
+import CloseIcon from '@mui/icons-material/Close'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import ErrorIcon from '@mui/icons-material/Error'
+import BoltIcon from '@mui/icons-material/Bolt'
+import TrendingUpIcon from '@mui/icons-material/TrendingUp'
 import { useRouter } from 'next/navigation'
 
 export default function UploadPage() {
@@ -123,259 +119,270 @@ export default function UploadPage() {
     const formatCurrency = (v: number) => `₹${v.toLocaleString('en-IN')}`
 
     return (
-        <div className="p-4 md:p-8 space-y-6">
-            {/* Header */}
-            <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-white">Upload Sales Data</h1>
-                <p className="text-neutral-500 mt-1">Import your daily Excel file to calculate profits</p>
-            </div>
+        <Box sx={{ p: { xs: 2, md: 3 } }}>
+            {/* Main Content */}
+            <Box sx={{ 
+                maxWidth: 700,
+                mx: 'auto',
+                width: '100%'
+            }}>
+                {/* Header */}
+                <Box sx={{ mb: 3 }}>
+                    <Typography variant="h6" component="h1" fontWeight="bold" color="white">
+                        Upload Sales Data
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                        Import your daily Excel file to calculate profits
+                    </Typography>
+                </Box>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Main Upload Area */}
-                <div className="lg:col-span-2 space-y-6">
-                    {/* Drop Zone */}
-                    <Card className="bg-neutral-900 border-neutral-800">
-                        <CardBody className="p-6">
-                            <div
-                                onDragOver={(e) => e.preventDefault()}
-                                onDrop={handleDrop}
-                                onClick={() => fileInputRef.current?.click()}
-                                className={`
-                                    border-2 border-dashed rounded-xl p-12 text-center cursor-pointer
-                                    transition-colors duration-200
-                                    ${file ? 'border-green-500 bg-green-500/5' : 'border-neutral-700 hover:border-[#D4440D]'}
-                                `}
-                            >
-                                <input
-                                    ref={fileInputRef}
-                                    type="file"
-                                    accept=".xlsx,.xls"
-                                    onChange={handleFileChange}
-                                    className="hidden"
-                                />
+                {/* Drop Zone Card */}
+                <Card sx={{ bgcolor: 'background.paper', borderRadius: 2, width: '100%', mb: 3 }}>
+                    <CardContent sx={{ p: 3 }}>
+                        <Box
+                            onDragOver={(e) => e.preventDefault()}
+                            onDrop={handleDrop}
+                            onClick={() => fileInputRef.current?.click()}
+                            sx={{
+                                border: '2px dashed',
+                                borderColor: file ? 'success.main' : 'grey.600',
+                                bgcolor: file ? 'rgba(34, 197, 94, 0.08)' : 'rgba(255,255,255,0.02)',
+                                borderRadius: 2,
+                                p: { xs: 4, md: 5 },
+                                textAlign: 'center',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s',
+                                minHeight: 180,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                '&:hover': {
+                                    borderColor: file ? 'success.main' : '#ef4444',
+                                    bgcolor: file ? 'rgba(34, 197, 94, 0.12)' : 'rgba(239, 68, 68, 0.05)',
+                                },
+                            }}
+                        >
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept=".xlsx,.xls"
+                                onChange={handleFileChange}
+                                style={{ display: 'none' }}
+                            />
 
-                                <div className="flex flex-col items-center gap-4">
-                                    {file ? (
-                                        <>
-                                            <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center">
-                                                <FileSpreadsheet className="w-8 h-8 text-green-500" />
-                                            </div>
-                                            <div>
-                                                <p className="font-medium text-white">{file.name}</p>
-                                                <p className="text-sm text-neutral-500">
-                                                    {(file.size / 1024).toFixed(1)} KB
-                                                </p>
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <div className="w-16 h-16 rounded-full bg-[#D4440D]/20 flex items-center justify-center">
-                                                <Upload className="w-8 h-8 text-[#D4440D]" />
-                                            </div>
-                                            <div>
-                                                <p className="font-medium text-white">
-                                                    Drag & drop your file here
-                                                </p>
-                                                <p className="text-sm text-neutral-500 mt-1">
-                                                    or click to browse (Excel files only)
-                                                </p>
-                                            </div>
-                                        </>
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Error */}
-                            {error && (
-                                <div className="mt-4 flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
-                                    <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
-                                    <p className="text-sm text-red-400">{error}</p>
-                                </div>
-                            )}
-
-                            {/* Action Buttons */}
-                            {file && !parseResult && (
-                                <div className="mt-6 flex gap-3">
-                                    <Button
-                                        color="primary"
-                                        className="flex-1 bg-[#D4440D]"
-                                        onPress={processFile}
-                                        isLoading={isProcessing}
-                                    >
-                                        {!isProcessing && <Zap className="w-4 h-4 mr-2" />}
-                                        Process & Calculate
-                                    </Button>
-                                    <Button variant="bordered" onPress={clearFile}>
-                                        <X className="w-4 h-4" />
-                                    </Button>
-                                </div>
-                            )}
-
-                            {/* Progress Steps */}
-                            {step > 0 && (
-                                <div className="mt-6 space-y-3">
-                                    <div className="flex items-center gap-3">
-                                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${step >= 1 ? 'bg-green-500' : 'bg-neutral-700'}`}>
-                                            {step >= 2 ? <CheckCircle className="w-4 h-4 text-white" /> : <span className="text-xs text-white">1</span>}
-                                        </div>
-                                        <span className={step >= 1 ? 'text-white' : 'text-neutral-500'}>Parsing Excel file...</span>
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${step >= 2 ? 'bg-green-500' : 'bg-neutral-700'}`}>
-                                            {step >= 3 ? <CheckCircle className="w-4 h-4 text-white" /> : <span className="text-xs text-white">2</span>}
-                                        </div>
-                                        <span className={step >= 2 ? 'text-white' : 'text-neutral-500'}>Calculating profits...</span>
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${step >= 3 ? 'bg-green-500' : 'bg-neutral-700'}`}>
-                                            {step >= 3 ? <CheckCircle className="w-4 h-4 text-white" /> : <span className="text-xs text-white">3</span>}
-                                        </div>
-                                        <span className={step >= 3 ? 'text-white' : 'text-neutral-500'}>Saving to database...</span>
-                                    </div>
-                                </div>
-                            )}
-                        </CardBody>
-                    </Card>
-
-                    {/* Parse Result */}
-                    {parseResult && (
-                        <Card className="bg-neutral-900 border-neutral-800">
-                            <CardHeader className="px-6 pt-6 pb-0">
-                                <div className="flex items-center gap-2">
-                                    <CheckCircle className="w-5 h-5 text-green-500" />
-                                    <h3 className="text-lg font-semibold text-white">Parsed Successfully</h3>
-                                </div>
-                            </CardHeader>
-                            <CardBody className="p-6 space-y-4">
-                                {/* Summary Grid */}
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                    <div className="bg-neutral-800 rounded-lg p-3">
-                                        <p className="text-xs text-neutral-500">Items</p>
-                                        <p className="text-xl font-bold text-white">{parseResult.summary.totalItems}</p>
-                                    </div>
-                                    <div className="bg-neutral-800 rounded-lg p-3">
-                                        <p className="text-xs text-neutral-500">Orders</p>
-                                        <p className="text-xl font-bold text-white">{parseResult.summary.totalOrders}</p>
-                                    </div>
-                                    <div className="bg-neutral-800 rounded-lg p-3">
-                                        <p className="text-xs text-neutral-500">Revenue</p>
-                                        <p className="text-xl font-bold text-white">{formatCurrency(parseResult.summary.totalRevenue)}</p>
-                                    </div>
-                                    <div className="bg-green-500/10 rounded-lg p-3 border border-green-500/20">
-                                        <p className="text-xs text-green-400">Profit</p>
-                                        <p className="text-xl font-bold text-green-500">{formatCurrency(parseResult.summary.totalProfit)}</p>
-                                    </div>
-                                </div>
-
-                                {/* Category Breakdown */}
-                                {parseResult.categories?.length > 0 && (
-                                    <div className="bg-neutral-800/50 rounded-lg p-4">
-                                        <h4 className="text-xs font-semibold text-neutral-400 mb-3 uppercase">Category Breakdown</h4>
-                                        <div className="space-y-2">
-                                            {parseResult.categories.map((cat: any, i: number) => (
-                                                <div key={i} className="flex items-center justify-between text-sm">
-                                                    <span className="text-neutral-300">{cat.name}</span>
-                                                    <div className="flex items-center gap-4">
-                                                        <span className="text-neutral-500">{cat.totalQuantity} orders</span>
-                                                        <span className="text-white font-medium">{formatCurrency(cat.totalRevenue)}</span>
-                                                        <Chip
-                                                            size="sm"
-                                                            color={cat.avgMargin >= 50 ? 'success' : cat.avgMargin >= 40 ? 'warning' : 'danger'}
-                                                            variant="flat"
-                                                        >
-                                                            {cat.avgMargin}%
-                                                        </Chip>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+                                {file ? (
+                                    <>
+                                        <Box sx={{ width: 64, height: 64, borderRadius: '50%', bgcolor: 'rgba(34, 197, 94, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <DescriptionIcon sx={{ fontSize: 32, color: 'success.main' }} />
+                                        </Box>
+                                        <Box>
+                                            <Typography variant="body1" fontWeight={600} color="white">{file.name}</Typography>
+                                            <Typography variant="body2" color="text.secondary">
+                                                {(file.size / 1024).toFixed(1)} KB
+                                            </Typography>
+                                        </Box>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Box sx={{ width: 72, height: 72, borderRadius: '50%', bgcolor: 'rgba(239, 68, 68, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <CloudUploadIcon sx={{ fontSize: 36, color: '#ef4444' }} />
+                                        </Box>
+                                        <Box sx={{ textAlign: 'center' }}>
+                                            <Typography variant="h6" fontWeight={600} color="white">
+                                                Drag & drop your file here
+                                            </Typography>
+                                            <Typography variant="body2" color="text.secondary">
+                                                or click to browse • Excel files only (.xlsx, .xls)
+                                            </Typography>
+                                        </Box>
+                                    </>
                                 )}
+                            </Box>
+                        </Box>
 
-                                {/* Net Margin */}
-                                <div className="flex items-center justify-between bg-[#D4440D]/10 rounded-lg p-4 border border-[#D4440D]/20">
-                                    <div className="flex items-center gap-2">
-                                        <TrendingUp className="w-5 h-5 text-[#D4440D]" />
-                                        <span className="text-white font-medium">Net Profit Margin</span>
-                                    </div>
-                                    <span className="text-2xl font-bold text-[#D4440D]">{parseResult.summary.netMargin}%</span>
-                                </div>
+                        {/* Error */}
+                        {error && (
+                            <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', gap: 1, p: 1.5, bgcolor: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: 1.5 }}>
+                                <ErrorIcon sx={{ color: 'error.main', flexShrink: 0, fontSize: 18 }} />
+                                <Typography variant="caption" color="error.light">{error}</Typography>
+                            </Box>
+                        )}
 
-                                {step === 3 && (
-                                    <div className="flex items-center gap-2 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
-                                        <CheckCircle className="w-5 h-5 text-green-500" />
-                                        <p className="text-sm text-green-400">Saved! Redirecting to report...</p>
-                                    </div>
-                                )}
-                            </CardBody>
-                        </Card>
-                    )}
-                </div>
+                        {/* Action Buttons */}
+                        {file && !parseResult && (
+                            <Box sx={{ mt: 2, display: 'flex', gap: 1.5 }}>
+                                <Button
+                                    variant="contained"
+                                    onClick={processFile}
+                                    disabled={isProcessing}
+                                    size="small"
+                                    startIcon={!isProcessing && <BoltIcon sx={{ fontSize: 16 }} />}
+                                    sx={{
+                                        flex: 1,
+                                        bgcolor: '#ef4444',
+                                        color: 'white',
+                                        py: 1,
+                                        fontWeight: 600,
+                                        '&:hover': { bgcolor: '#dc2626' },
+                                    }}
+                                >
+                                    {isProcessing ? 'Processing...' : 'Process & Calculate'}
+                                </Button>
+                                <Button 
+                                    variant="outlined" 
+                                    size="small" 
+                                    onClick={clearFile} 
+                                    sx={{ borderColor: 'grey.600', color: 'grey.400', px: 1.5, minWidth: 'auto' }}
+                                >
+                                    <CloseIcon sx={{ fontSize: 18 }} />
+                                </Button>
+                            </Box>
+                        )}
 
-                {/* Sidebar */}
-                <div className="space-y-6">
-                    {/* How It Works */}
-                    <Card className="bg-neutral-900 border-neutral-800">
-                        <CardHeader className="px-6 pt-6 pb-0">
-                            <h3 className="text-base font-semibold text-white">How It Works</h3>
-                        </CardHeader>
-                        <CardBody className="p-6">
-                            <div className="space-y-4 text-sm">
-                                <div className="flex items-start gap-3">
-                                    <div className="w-6 h-6 rounded-full bg-[#D4440D]/20 flex items-center justify-center flex-shrink-0">
-                                        <span className="text-xs font-bold text-[#D4440D]">1</span>
-                                    </div>
-                                    <div>
-                                        <p className="font-medium text-white">Parse Excel</p>
-                                        <p className="text-neutral-500">Extracts all items and sales data</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start gap-3">
-                                    <div className="w-6 h-6 rounded-full bg-[#D4440D]/20 flex items-center justify-center flex-shrink-0">
-                                        <span className="text-xs font-bold text-[#D4440D]">2</span>
-                                    </div>
-                                    <div>
-                                        <p className="font-medium text-white">Calculate Profits</p>
-                                        <p className="text-neutral-500">Matches with inventory costs</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start gap-3">
-                                    <div className="w-6 h-6 rounded-full bg-[#D4440D]/20 flex items-center justify-center flex-shrink-0">
-                                        <span className="text-xs font-bold text-[#D4440D]">3</span>
-                                    </div>
-                                    <div>
-                                        <p className="font-medium text-white">Save & Analyze</p>
-                                        <p className="text-neutral-500">Stores for reporting and trends</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </CardBody>
+                        {/* Progress Steps */}
+                        {step > 0 && (
+                            <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                {[
+                                    { num: 1, label: 'Parsing Excel file...' },
+                                    { num: 2, label: 'Calculating profits...' },
+                                    { num: 3, label: 'Saving to database...' },
+                                ].map((s) => (
+                                    <Box key={s.num} sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                                        <Box sx={{ 
+                                            width: 20, 
+                                            height: 20, 
+                                            borderRadius: '50%', 
+                                            bgcolor: step >= s.num ? 'success.main' : 'grey.700', 
+                                            display: 'flex', 
+                                            alignItems: 'center', 
+                                            justifyContent: 'center' 
+                                        }}>
+                                            {step > s.num ? (
+                                                <CheckCircleIcon sx={{ fontSize: 12, color: 'white' }} />
+                                            ) : (
+                                                <Typography sx={{ fontSize: 10, color: 'white', fontWeight: 600 }}>{s.num}</Typography>
+                                            )}
+                                        </Box>
+                                        <Typography variant="caption" color={step >= s.num ? 'white' : 'text.secondary'}>
+                                            {s.label}
+                                        </Typography>
+                                    </Box>
+                                ))}
+                            </Box>
+                        )}
+                    </CardContent>
+                </Card>
+
+                {/* Parse Result */}
+                {parseResult && (
+                    <Card sx={{ bgcolor: 'background.paper', borderRadius: 2, width: '100%', mb: 2 }}>
+                        <CardContent sx={{ p: 2 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
+                                <CheckCircleIcon sx={{ color: 'success.main', fontSize: 20 }} />
+                                <Typography variant="body1" fontWeight={600} color="white">Parsed Successfully</Typography>
+                            </Box>
+                            
+                            {/* Summary Grid */}
+                            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 1.5, mb: 2 }}>
+                                <Box sx={{ bgcolor: 'grey.800', borderRadius: 1.5, p: 1.5 }}>
+                                    <Typography variant="caption" color="text.secondary">Items</Typography>
+                                    <Typography variant="body1" fontWeight="bold" color="white">{parseResult.summary.totalItems}</Typography>
+                                </Box>
+                                <Box sx={{ bgcolor: 'grey.800', borderRadius: 1.5, p: 1.5 }}>
+                                    <Typography variant="caption" color="text.secondary">Orders</Typography>
+                                    <Typography variant="body1" fontWeight="bold" color="white">{parseResult.summary.totalOrders}</Typography>
+                                </Box>
+                                <Box sx={{ bgcolor: 'grey.800', borderRadius: 1.5, p: 1.5 }}>
+                                    <Typography variant="caption" color="text.secondary">Revenue</Typography>
+                                    <Typography variant="body1" fontWeight="bold" color="white">{formatCurrency(parseResult.summary.totalRevenue)}</Typography>
+                                </Box>
+                                <Box sx={{ bgcolor: 'rgba(34, 197, 94, 0.15)', borderRadius: 1.5, p: 1.5, border: '1px solid rgba(34, 197, 94, 0.3)' }}>
+                                    <Typography variant="caption" sx={{ color: '#22c55e' }}>Profit</Typography>
+                                    <Typography variant="body1" fontWeight="bold" sx={{ color: '#22c55e' }}>{formatCurrency(parseResult.summary.totalProfit)}</Typography>
+                                </Box>
+                            </Box>
+
+                            {/* Category Breakdown */}
+                            {parseResult.categories?.length > 0 && (
+                                <Box sx={{ bgcolor: 'rgba(38, 38, 38, 0.5)', borderRadius: 1.5, p: 1.5, mb: 1.5 }}>
+                                    <Typography variant="caption" fontWeight={600} color="text.secondary" sx={{ textTransform: 'uppercase', mb: 1, display: 'block', letterSpacing: 0.5 }}>
+                                        Category Breakdown
+                                    </Typography>
+                                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                        {parseResult.categories.map((cat: { name: string; totalQuantity: number; totalRevenue: number; avgMargin: number }, i: number) => (
+                                            <Box key={i} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                                <Typography variant="caption" color="text.secondary">{cat.name}</Typography>
+                                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                                                    <Typography variant="caption" color="text.secondary">{cat.totalQuantity}</Typography>
+                                                    <Typography variant="caption" fontWeight={600} color="white">{formatCurrency(cat.totalRevenue)}</Typography>
+                                                    <Chip
+                                                        size="small"
+                                                        label={`${cat.avgMargin}%`}
+                                                        color={cat.avgMargin >= 50 ? 'success' : cat.avgMargin >= 40 ? 'warning' : 'error'}
+                                                        sx={{ height: 18, '& .MuiChip-label': { px: 0.75, fontSize: 10 } }}
+                                                    />
+                                                </Box>
+                                            </Box>
+                                        ))}
+                                    </Box>
+                                </Box>
+                            )}
+
+                            {/* Net Margin */}
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', bgcolor: 'rgba(38, 38, 38, 0.5)', borderRadius: 1.5, p: 1.5, border: '1px solid #404040' }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                    <TrendingUpIcon sx={{ color: 'grey.300', fontSize: 16 }} />
+                                    <Typography variant="body2" fontWeight={600} color="white">Net Profit Margin</Typography>
+                                </Box>
+                                <Typography variant="body1" fontWeight="bold" color="grey.100">{parseResult.summary.netMargin}%</Typography>
+                            </Box>
+
+                            {step === 3 && (
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1.5, bgcolor: 'rgba(34, 197, 94, 0.1)', border: '1px solid rgba(34, 197, 94, 0.3)', borderRadius: 1.5, mt: 1.5 }}>
+                                    <CheckCircleIcon sx={{ color: 'success.main', fontSize: 16 }} />
+                                    <Typography variant="caption" sx={{ color: '#22c55e' }}>Saved! Redirecting to report...</Typography>
+                                </Box>
+                            )}
+                        </CardContent>
                     </Card>
+                )}
 
-                    {/* Margin Guide */}
-                    <Card className="bg-neutral-900 border-neutral-800">
-                        <CardHeader className="px-6 pt-6 pb-0">
-                            <h3 className="text-base font-semibold text-white">Margin Guide</h3>
-                        </CardHeader>
-                        <CardBody className="p-6">
-                            <div className="space-y-3 text-sm">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-neutral-400">Drinks & Mocktails</span>
-                                    <Chip size="sm" color="success" variant="flat">60-70%</Chip>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <span className="text-neutral-400">Starters & Snacks</span>
-                                    <Chip size="sm" color="warning" variant="flat">45-55%</Chip>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <span className="text-neutral-400">Premium Items</span>
-                                    <Chip size="sm" color="danger" variant="flat">30-45%</Chip>
-                                </div>
-                            </div>
-                        </CardBody>
-                    </Card>
-                </div>
-            </div>
-        </div>
+                {/* How It Works - At Bottom */}
+                <Card sx={{ bgcolor: 'background.paper', borderRadius: 2, width: '100%', mt: 3 }}>
+                    <CardContent sx={{ p: 3 }}>
+                        <Typography variant="body1" fontWeight={600} color="white" sx={{ mb: 2, textAlign: 'center' }}>
+                            How It Works
+                        </Typography>
+                        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 3, justifyContent: 'space-around' }}>
+                            {[
+                                { num: 1, title: 'Parse Excel', desc: 'Extracts items and sales data' },
+                                { num: 2, title: 'Calculate Profits', desc: 'Matches with inventory costs' },
+                                { num: 3, title: 'Save & Analyze', desc: 'Stores for reporting' },
+                            ].map((item) => (
+                                <Box key={item.num} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5, flex: 1 }}>
+                                    <Box sx={{ 
+                                        width: 28, 
+                                        height: 28, 
+                                        borderRadius: '50%', 
+                                        bgcolor: 'rgba(239, 68, 68, 0.2)', 
+                                        display: 'flex', 
+                                        alignItems: 'center', 
+                                        justifyContent: 'center', 
+                                        flexShrink: 0 
+                                    }}>
+                                        <Typography sx={{ fontSize: 12, fontWeight: 'bold', color: '#ef4444' }}>{item.num}</Typography>
+                                    </Box>
+                                    <Box>
+                                        <Typography variant="body2" fontWeight={600} color="white">{item.title}</Typography>
+                                        <Typography variant="caption" color="text.secondary">{item.desc}</Typography>
+                                    </Box>
+                                </Box>
+                            ))}
+                        </Box>
+                    </CardContent>
+                </Card>
+            </Box>
+        </Box>
     )
 }

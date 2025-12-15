@@ -16,8 +16,8 @@ body {
 }
 
 body {
-  background: #000000;
-  color: #ffffff;
+  background: transparent;
+  color: inherit;
 }
 
 /* Custom scrollbar */
