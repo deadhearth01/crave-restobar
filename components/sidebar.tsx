@@ -203,21 +203,25 @@ export function Sidebar() {
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                         <Box
                             sx={{
-                                width: 36,
-                                height: 36,
-                                borderRadius: 1.5,
-                                overflow: 'hidden',
+                                width: 40,
+                                height: 40,
+                                borderRadius: 2,
+                                overflow: 'visible',
                                 bgcolor: 'grey.800',
                                 border: '1px solid',
                                 borderColor: 'grey.700',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexShrink: 0,
                             }}
                         >
                             <Image
                                 src="/logo.png"
                                 alt="Logo"
-                                width={36}
-                                height={36}
-                                style={{ objectFit: 'cover' }}
+                                width={40}
+                                height={40}
+                                style={{ objectFit: 'contain', borderRadius: 8 }}
                             />
                         </Box>
                         <Box>
@@ -241,9 +245,10 @@ export function Sidebar() {
                 </Toolbar>
             </AppBar>
 
-            {/* Mobile Drawer */}
+            {/* Mobile Drawer - Right Side */}
             <Drawer
                 variant="temporary"
+                anchor="right"
                 open={mobileOpen}
                 onClose={handleDrawerToggle}
                 ModalProps={{ keepMounted: true }}
@@ -252,12 +257,12 @@ export function Sidebar() {
                     '& .MuiDrawer-paper': {
                         width: DRAWER_WIDTH_EXPANDED,
                         bgcolor: 'grey.900',
-                        borderRight: '1px solid',
+                        borderLeft: '1px solid',
                         borderColor: 'grey.800',
                     },
                 }}
             >
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 0.5 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'flex-start', p: 0.5 }}>
                     <IconButton onClick={handleDrawerToggle} size="small" sx={{ color: 'grey.400' }}>
                         <CloseIcon fontSize="small" />
                     </IconButton>
